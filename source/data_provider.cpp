@@ -13,7 +13,7 @@ namespace goblin_engineer {
 
     }
 
-    data_provider::data_provider(goblin_engineer::context_t *context, const std::string &name):sync_actor(context->env(),name){
+    data_provider::data_provider(actor_zeta::environment::abstract_environment *env,  const std::string &name):actor_zeta::actor::local_actor(env,name){
 
     }
 
@@ -22,13 +22,13 @@ namespace goblin_engineer {
             actor_zeta::behavior::context context_(this, std::move(message));
             reactions_.execute(context_); /** context processing */
         }
+        return true;
     }
 
     void data_provider::launch(actor_zeta::executor::execution_device *, bool) {
 
     }
 
-    data_provider::~data_provider()  = default;
 
 }
 

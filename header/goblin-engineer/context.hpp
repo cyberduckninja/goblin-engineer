@@ -12,10 +12,6 @@ namespace goblin_engineer {
 
     struct context_t {
 
-        virtual auto env() -> actor_zeta::environment::abstract_environment * = 0;
-
-        virtual auto  config() const -> dynamic_config&    = 0;
-
         virtual boost::asio::io_service &main_loop() const = 0;
 
         virtual boost::thread_group &background()    const = 0;

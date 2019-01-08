@@ -1,12 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <iostream>
-#include <queue>
-#include <unordered_map>
-
 #include <goblin-engineer/forward.hpp>
-
 #include <actor-zeta/actor/basic_actor.hpp>
 
 namespace goblin_engineer {
@@ -15,9 +9,10 @@ namespace goblin_engineer {
 
     struct abstract_service: public basic_async_actor {
 
-        abstract_service(goblin_engineer::context_t *,const std::string& );
+        template <std::size_t N>
+        abstract_service(actor_zeta::environment::abstract_environment *env,const char(&name)[N]): basic_async_actor(env,name){}
 
-        virtual ~abstract_service();
+        virtual ~abstract_service() = default;
 
         static constexpr bool in_plugin = false;
 

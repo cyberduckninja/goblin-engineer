@@ -13,18 +13,18 @@ namespace goblin_engineer {
             public abstract_environment {
     public:
 
-        dynamic_environment(configuration&&);
+        explicit dynamic_environment(configuration&&);
 
-        ~dynamic_environment();
+        ~dynamic_environment() override;
 
         template <typename SERVICE,typename ...Args>
         auto add_service(Args &&...args) -> service& {
-            return add_service(new SERVICE(static_cast<context_t*>(this),std::forward<Args>(args)...));
+            return add_service(new SERVICE(config(),env(),std::forward<Args>(args)...));
         }
 
         template<typename DataProvider,typename ...Args>
         auto add_data_provider(actor_zeta::actor::actor_address address,Args &&...args) -> data_provider& {
-            return add_data_provider(new DataProvider(static_cast<context_t*>(this),std::move(address),std::forward<Args>(args)...));
+            return add_data_provider(new DataProvider(config(),env(),std::move(address),std::forward<Args>(args)...));
         }
 
         auto add_plugin(abstract_plugin *) -> void;
@@ -37,15 +37,15 @@ namespace goblin_engineer {
 
     private:
 
-        auto env() -> actor_zeta::environment::abstract_environment *;
+        auto env() -> goblin_engineer::abstract_environment *;
 
         auto add_service(abstract_service*) ->  service &;
 
         auto add_data_provider(data_provider*)-> data_provider&;
 
-        auto  config()  const -> dynamic_config& override;
+        auto config() const -> dynamic_config& ;
 
-        int start() override ;
+        auto start() -> int override ;
 
         auto manager_execution_device() -> actor_zeta::executor::abstract_coordinator & override ;
 
@@ -53,9 +53,9 @@ namespace goblin_engineer {
 
         auto context() -> context_t *;
 
-        boost::asio::io_service& main_loop() const override;
+        auto main_loop() const ->  boost::asio::io_service& override;
 
-        boost::thread_group& background() const override;
+        auto background() const -> boost::thread_group& override;
 
         struct impl;
 

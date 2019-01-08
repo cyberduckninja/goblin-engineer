@@ -1,12 +1,13 @@
 #include <goblin-engineer/dynamic_environment.hpp>
 
 #include <forward_list>
+#include <iostream>
 
 #include <actor-zeta/environment/cooperation.hpp>
 #include <actor-zeta/executor/coordinator.hpp>
 #include <actor-zeta/executor/policy/work_sharing.hpp>
 
-
+#include <goblin-engineer/dynamic.hpp>
 #include <goblin-engineer/metadata.hpp>
 #include <goblin-engineer/abstract_service.hpp>
 #include <goblin-engineer/plugin.hpp>
@@ -117,12 +118,14 @@ namespace goblin_engineer {
             goblin_engineer::shutdown((*i.second.get()));
         }
 
+        /// TODO: Plugin
+        /*
         for (const auto &i:pimpl->current_state()) {
             if (pimpl->state(i) == plugin_state::started) {
                 pimpl->get_plugin(i).shutdown();
             }
         }
-
+        */
         pimpl->main_loop()->stop();
 
     }
@@ -133,11 +136,14 @@ namespace goblin_engineer {
             goblin_engineer::startup(*(i.second.get()),static_cast<context_t*>(this));
         }
 
+        /// TODO: Plugin
+        /*
         for (const auto &i:pimpl->current_state()) {
             if (pimpl->state(i) == plugin_state::initialized) {
                 pimpl->get_plugin(i).startup(static_cast<context_t*>(this));
             }
         }
+        */
 
         start();
 
@@ -145,18 +151,20 @@ namespace goblin_engineer {
     }
 
     void dynamic_environment::initialize() {
-
+        /// TODO: Plugin
+        /*
         for (const auto &i:pimpl->configuration_.plugins) {
             auto &plugin = pimpl->get_plugin(i);
             if (plugin.state() == plugin_state::registered) {
                 plugin.initialization();
             }
         }
+         */
 
     }
 
     dynamic_environment::dynamic_environment(configuration &&f) : pimpl(new impl) {
-        pimpl->configuration_ = f;
+        pimpl->configuration_ = std::move(f);
 
         std::shared_ptr<boost::asio::signal_set> sigint_set(new boost::asio::signal_set(main_loop(), SIGINT, SIGTERM));
         sigint_set->async_wait(
@@ -175,8 +183,7 @@ namespace goblin_engineer {
         std::cerr << "~goblin-engineer" << std::endl;
     }
 
-
-    context_t *dynamic_environment::context() {
+    auto dynamic_environment::context() -> context_t * {
         return static_cast<context_t *>(this);
     }
 
@@ -193,11 +200,11 @@ namespace goblin_engineer {
         return pimpl->main_loop()->run();
     }
 
-    actor_zeta::executor::abstract_coordinator &dynamic_environment::manager_execution_device() {
+    auto dynamic_environment::manager_execution_device() -> actor_zeta::executor::abstract_coordinator & {
         return *pimpl->coordinator_;
     }
 
-    actor_zeta::environment::cooperation &dynamic_environment::manager_group() {
+    auto dynamic_environment::manager_group() -> actor_zeta::environment::cooperation & {
         return pimpl->cooperation_;
     }
 
@@ -206,6 +213,7 @@ namespace goblin_engineer {
     }
 
     auto dynamic_environment::add_service(abstract_service *service_ptr) -> service & {
+        service_ptr->startup(context());
         return manager_group().created_group(service_ptr);
     }
 
@@ -213,8 +221,8 @@ namespace goblin_engineer {
         return pimpl->configuration();
     }
 
-    auto dynamic_environment::env() -> actor_zeta::environment::abstract_environment  * {
-        return this;
+    auto dynamic_environment::env() -> goblin_engineer::abstract_environment  * {
+        return static_cast<goblin_engineer::abstract_environment  *>(this);
     }
 
     auto dynamic_environment::add_data_provider(data_provider *ptr ) -> data_provider & {

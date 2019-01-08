@@ -1,26 +1,16 @@
 #pragma once
 
-#include <cstdint>
-#include <iostream>
-#include <queue>
-#include <unordered_map>
-
 #include <actor-zeta/actor/local_actor.hpp>
-#include <actor-zeta/messaging/message.hpp>
 
 #include <goblin-engineer/context.hpp>
 
 namespace goblin_engineer {
 
-    using actor_zeta::messaging::message;
+    struct data_provider : public actor_zeta::actor::local_actor {
 
-    using sync_actor = actor_zeta::actor::local_actor;
+        data_provider(actor_zeta::environment::abstract_environment *,  const std::string &);
 
-    struct data_provider : public sync_actor {
-
-        data_provider(goblin_engineer::context_t *context,  const std::string &name);
-
-        virtual ~data_provider();
+        virtual ~data_provider() override = default;
 
         virtual void startup(goblin_engineer::context_t *) = 0;
 

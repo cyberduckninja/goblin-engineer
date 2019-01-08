@@ -16,6 +16,8 @@ namespace goblin_engineer {
 
     class dynamic_environment;
 
+    class dynamic_config;
+
     class plugin;
 
     struct abstract_plugin;
