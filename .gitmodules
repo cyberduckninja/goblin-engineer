@@ -1,7 +1,3 @@
-[submodule "dependency/yaml-cpp"]
-	path = dependency/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp
-
 [submodule "dependency/actor-zeta"]
  	path = dependency/actor-zeta
  	url = git@github.com:smart-cloud/actor-zeta.git
