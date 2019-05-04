@@ -112,8 +112,7 @@ add_library(
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
         ${Boost_LIBRARIES}
-        actor-zeta-core
-        actor-zeta-io
+        actor-zeta
 )
 
 target_include_directories(
