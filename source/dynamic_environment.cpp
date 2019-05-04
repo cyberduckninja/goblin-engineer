@@ -227,7 +227,7 @@ namespace goblin_engineer {
 
     auto dynamic_environment::add_data_provider(data_provider *ptr ) -> data_provider & {
        auto name_  =  ptr->name();
-       pimpl->data_provider_.emplace(name_,ptr);
+       pimpl->data_provider_.emplace(name_,std::unique_ptr<data_provider>(ptr));
        return *(pimpl->data_provider_.at(name_).get());
     }
 
