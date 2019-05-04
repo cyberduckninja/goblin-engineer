@@ -1,0 +1,9 @@
+[requires]
+boost/1.69.0@conan/stable
+OpenSSL/1.0.2p@conan/stable
+
+[options]
+OpenSSL:shared = True
+
+[generators]
+cmake

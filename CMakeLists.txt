@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 set(project goblin-engineer)
 
@@ -36,25 +36,46 @@ include_directories(SYSTEM ${path_actor_zeta}/io)
 
 #############################################################################################
 #BOOST
-set(BOOST_COMPONENTS)
 
-list(APPEND BOOST_COMPONENTS
-        thread
-        date_time
-        system
-        filesystem
-        timer
-        chrono
-        program_options
-        unit_test_framework
-        locale
-        )
+option(CONAN ""  OFF)
 
+if(CONAN)
 
-find_package (Boost 1.67 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
-include_directories (SYSTEM ${Boost_INCLUDE_DIR})
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.13/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+    endif()
+
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+    conan_cmake_run(
+            CONANFILE conanfile.txt
+            BASIC_SETUP
+            BUILD missing
+            NO_OUTPUT_DIRS
+    )
+
+else()
+
+    set(BOOST_COMPONENTS
+            thread
+            date_time
+            system
+            filesystem
+            timer
+            chrono
+            program_options
+            unit_test_framework
+            locale
+            )
+
+    find_package (Boost 1.66 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+
+endif()
+
+include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
+
 #############################################################################################
-
 
 include_directories(header)
 
@@ -99,6 +120,4 @@ target_include_directories(
         ${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/header
-        ${path_actor_zeta}/core
-        ${path_actor_zeta}/io
 )
