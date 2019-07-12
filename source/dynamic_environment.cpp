@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <actor-zeta/environment/cooperation.hpp>
-#include <actor-zeta/executor/coordinator.hpp>
+#include <actor-zeta/executor/executor.hpp>
 #include <actor-zeta/executor/policy/work_sharing.hpp>
 
 #include <goblin-engineer/dynamic.hpp>
@@ -47,7 +47,7 @@ namespace goblin_engineer {
 
     struct dynamic_environment::impl final {
         impl() :
-                coordinator_(new actor_zeta::executor::coordinator<actor_zeta::executor::work_sharing>(1, 1000)),
+                coordinator_(new actor_zeta::executor::executor<actor_zeta::executor::work_sharing>(1, 1000)),
                 io_serv(new boost::asio::io_service),
                 background_(new boost::thread_group) {
         }
@@ -95,7 +95,7 @@ namespace goblin_engineer {
         ///Config
 
         actor_zeta::environment::cooperation cooperation_;
-        std::unique_ptr<actor_zeta::executor::abstract_coordinator>coordinator_;
+        std::unique_ptr<actor_zeta::executor::abstract_executor>coordinator_;
 
         std::unordered_map<std::string,std::unique_ptr<data_provider> >  data_provider_;
 
@@ -196,11 +196,11 @@ namespace goblin_engineer {
     }
 
     int dynamic_environment::start() {
-        manager_execution_device().start();
+        get_executor().start();
         return pimpl->main_loop()->run();
     }
 
-    auto dynamic_environment::manager_execution_device() -> actor_zeta::executor::abstract_coordinator & {
+    auto dynamic_environment::get_executor() -> actor_zeta::executor::abstract_executor & {
         return *pimpl->coordinator_;
     }
 

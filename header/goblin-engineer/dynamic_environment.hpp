@@ -47,7 +47,7 @@ namespace goblin_engineer {
 
         auto start() -> int override ;
 
-        auto manager_execution_device() -> actor_zeta::executor::abstract_coordinator & override ;
+        auto get_executor() -> actor_zeta::executor::abstract_executor & override ;
 
         auto manager_group() -> actor_zeta::environment::cooperation & override ;
 

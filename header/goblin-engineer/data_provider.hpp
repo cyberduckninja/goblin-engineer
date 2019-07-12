@@ -16,11 +16,11 @@ namespace goblin_engineer {
 
         virtual void shutdown() = 0;
 
-        bool send(actor_zeta::messaging::message &&, actor_zeta::executor::execution_device *) override;
+        bool send(actor_zeta::messaging::message, actor_zeta::executor::execution_device *) override;
 
         void launch(actor_zeta::executor::execution_device *, bool) override;
 
-        bool send(message &&) override;
+        bool send(message ) override;
 
     };
 
