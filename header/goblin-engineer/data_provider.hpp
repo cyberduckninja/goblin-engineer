@@ -1,7 +1,6 @@
 #pragma once
 
 #include <actor-zeta/actor/local_actor.hpp>
-
 #include <goblin-engineer/context.hpp>
 
 namespace goblin_engineer {
@@ -10,13 +9,13 @@ namespace goblin_engineer {
 
         data_provider(actor_zeta::environment::abstract_environment *,  const std::string &);
 
-        virtual ~data_provider() override = default;
+        ~data_provider() override = default;
 
         virtual void startup(goblin_engineer::context_t *) = 0;
 
         virtual void shutdown() = 0;
 
-        bool send(actor_zeta::messaging::message, actor_zeta::executor::execution_device *) override;
+        bool send(message, actor_zeta::executor::execution_device *) override;
 
         void launch(actor_zeta::executor::execution_device *, bool) override;
 
