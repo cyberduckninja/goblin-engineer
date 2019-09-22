@@ -29,11 +29,9 @@ else()
 endif()
 
 include_directories(SYSTEM ${path_actor_zeta}/core)
-include_directories(SYSTEM ${path_actor_zeta}/io)
+include_directories(SYSTEM ${path_actor_zeta}/environment)
 
 #ACTOR-ZETA
-#############################################################################################
-
 #############################################################################################
 #BOOST
 
@@ -67,9 +65,9 @@ else()
             program_options
             unit_test_framework
             locale
-            )
+    )
 
-    find_package (Boost 1.66 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
+    find_package (Boost 1.70 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
 
 endif()
 
@@ -77,30 +75,20 @@ include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 
 #############################################################################################
 
-include_directories(header)
-
 list(APPEND ${PROJECT_NAME}_header
-
-        header/goblin-engineer/abstract_plugin.hpp
+        header/goblin-engineer/detail/converters.hpp
+        header/goblin-engineer/detail/constructors.hpp
+        header/goblin-engineer/detail/object.hpp
         header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/configuration.hpp
-        header/goblin-engineer/constructors.hpp
         header/goblin-engineer/context.hpp
-        header/goblin-engineer/converters.hpp
-        header/goblin-engineer/data_provider.hpp
         header/goblin-engineer/dynamic.hpp
         header/goblin-engineer/dynamic_environment.hpp
         header/goblin-engineer/forward.hpp
-        header/goblin-engineer/metadata.hpp
-        header/goblin-engineer/object.hpp
-        header/goblin-engineer/plugin.hpp
-        )
+)
 
 list(APPEND ${PROJECT_NAME}_source
-        source/data_provider.cpp
         source/dynamic.cpp
         source/dynamic_environment.cpp
-        source/plugin.cpp
 )
 
 add_library(
@@ -111,8 +99,8 @@ add_library(
 
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
-        ${Boost_LIBRARIES}
         actor-zeta
+        ${CONAN_LIBS}
 )
 
 target_include_directories(
@@ -120,3 +108,5 @@ target_include_directories(
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/header
 )
+
+add_subdirectory(example)

@@ -6,7 +6,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/variant.hpp>
 
-
 namespace goblin_engineer {
 
         template<class T>
@@ -259,9 +258,9 @@ namespace goblin_engineer {
 
 }
 
-#include "object.hpp"
-#include "constructors.hpp"
-#include "converters.hpp"
+#include <goblin-engineer/detail/object.hpp>
+#include <goblin-engineer/detail/constructors.hpp>
+#include <goblin-engineer/detail/converters.hpp>
 
 namespace boost {
 
