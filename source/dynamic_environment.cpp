@@ -12,7 +12,7 @@
 namespace goblin_engineer {
 
     void dynamic_environment::shutdown() {
-        io_serv->stop();
+        io_context_->stop();
     }
 
     void dynamic_environment::startup() {
@@ -26,7 +26,7 @@ namespace goblin_engineer {
 
     dynamic_environment::dynamic_environment(dynamic_config &&f)
         : coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
-        , io_serv(new boost::asio::io_context)
+        , io_context_(new boost::asio::io_context)
         , background_(new boost::thread_group)
         , configuration_ (std::move(f))
         {
@@ -43,7 +43,7 @@ namespace goblin_engineer {
 
     dynamic_environment::~dynamic_environment() {
         background().join_all();
-        io_serv->stopped();
+        io_context_->stopped();
         std::cerr << "~goblin-engineer" << std::endl;
     }
 
@@ -52,7 +52,7 @@ namespace goblin_engineer {
     }
 
     boost::asio::io_context &dynamic_environment::main_loop() const {
-        return *io_serv;
+        return *io_context_;
     }
 
     boost::thread_group &dynamic_environment::background() const {
@@ -61,7 +61,7 @@ namespace goblin_engineer {
 
     std::size_t dynamic_environment::start() {
         executor().start();
-        return io_serv->run();
+        return io_context_->run();
     }
 
     auto dynamic_environment::executor() -> actor_zeta::executor::abstract_executor & {

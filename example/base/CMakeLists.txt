@@ -14,8 +14,6 @@ else()
     PROJECT(${project} VERSION "${CMAKE_PROJECT_VERSION}" LANGUAGES CXX)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-
 list(APPEND ${PROJECT_NAME}_header
 
 )
@@ -32,7 +30,6 @@ add_executable(
 
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
-        actor-zeta
         goblin-engineer
         ${Boost_LIBRARIES}
         ${CONAN_LIBS}

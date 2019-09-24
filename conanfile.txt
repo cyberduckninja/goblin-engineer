@@ -1,11 +1,14 @@
 [requires]
 boost/1.71.0@conan/stable
+actor-zeta/1.0.0-alpha@jinntechio/testing
 
 [options]
 boost:error_code_header_only=True
 boost:system_no_deprecated=True
 boost:asio_no_deprecated=True
 boost:filesystem_no_deprecated=True
+actor-zeta:exceptions_disable=False
+actor-zeta:rtti_disable=False
 
 [generators]
 cmake

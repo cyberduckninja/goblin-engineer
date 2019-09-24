@@ -26,23 +26,28 @@ namespace goblin_engineer {
 
     };
 
-    template<class Supervisor = lite>
-    struct abstract_manager_service : public Supervisor {
+    struct abstract_manager_service_heavy : public heavy {
 
         template<std::size_t N>
-        abstract_manager_service(dynamic_environment *env, const char(&name)[N]): Supervisor(name) {}
+        abstract_manager_service_heavy(dynamic_environment *env, const char(&name)[N]): heavy(name) {}
 
-        ~abstract_manager_service() = default;
+        ~abstract_manager_service_heavy() override = default;
 
-        virtual void startup(context_t *) = 0;
+        virtual void startup(goblin_engineer::context_t *) = 0;
 
-        virtual void shutdown() = 0;
+//        virtual void shutdown() = 0;
     };
 
+    struct abstract_manager_service_lite : public lite {
 
-    using abstract_manager_service_lite = abstract_manager_service<lite>;
+        template<std::size_t N>
+        abstract_manager_service_lite(dynamic_environment *env, const char(&name)[N]): lite(name) {}
 
-    using abstract_manager_service_heavy = abstract_manager_service<heavy>;
+        ~abstract_manager_service_lite() override = default;
 
+        virtual void startup(goblin_engineer::context_t *) = 0;
+
+//        virtual void shutdown() = 0;
+    };
 }
 

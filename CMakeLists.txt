@@ -17,27 +17,7 @@ else()
 endif()
 
 #############################################################################################
-#ACTOR-ZETA
-
-option(STANDALONE-ACTOR-ZETA ""  OFF)
-
-if(STANDALONE-ACTOR-ZETA)
-    set(path_actor_zeta ${actor-zeta-dir})
-else()
-    add_subdirectory(dependency/actor-zeta)
-    set(path_actor_zeta "dependency/actor-zeta")
-endif()
-
-include_directories(SYSTEM ${path_actor_zeta}/core)
-include_directories(SYSTEM ${path_actor_zeta}/environment)
-
-#ACTOR-ZETA
-#############################################################################################
 #BOOST
-
-option(CONAN ""  OFF)
-
-if(CONAN)
 
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -52,24 +32,6 @@ if(CONAN)
             BUILD missing
             NO_OUTPUT_DIRS
     )
-
-else()
-
-    set(BOOST_COMPONENTS
-            thread
-            date_time
-            system
-            filesystem
-            timer
-            chrono
-            program_options
-            unit_test_framework
-            locale
-    )
-
-    find_package (Boost 1.70 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
-
-endif()
 
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 

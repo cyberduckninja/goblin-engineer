@@ -15,7 +15,7 @@ namespace goblin_engineer {
         ~dynamic_environment() override;
 
         template <typename Manager,typename ...Args>
-        auto add_manager_service(Args &&...args) -> Manager& {
+        auto add_manager_service(Args &&...args) -> Manager* {
             return supervisor<Manager>(config(),env(),std::forward<Args>(args)...);
         }
 
@@ -43,7 +43,7 @@ namespace goblin_engineer {
 
         goblin_engineer::dynamic_config configuration_;
         std::unique_ptr<actor_zeta::executor::abstract_executor>coordinator_;
-        std::unique_ptr<boost::asio::io_context> io_serv;
+        std::unique_ptr<boost::asio::io_context> io_context_;
         std::unique_ptr<boost::thread_group> background_;
     };
 
