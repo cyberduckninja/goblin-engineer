@@ -5,8 +5,6 @@
 
 namespace goblin_engineer {
 
-    using abstract_environment = actor_zeta::environment::abstract_environment;
-
     using message = actor_zeta::messaging::message;
 
     struct context_t;

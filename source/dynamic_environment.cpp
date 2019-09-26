@@ -72,7 +72,7 @@ namespace goblin_engineer {
         return configuration_;
     }
 
-    auto dynamic_environment::env() -> goblin_engineer::abstract_environment  * {
-        return static_cast<goblin_engineer::abstract_environment  *>(this);
+    auto dynamic_environment::environment() -> goblin_engineer::dynamic_environment  * {
+        return static_cast<goblin_engineer::dynamic_environment  *>(this);
     }
 }

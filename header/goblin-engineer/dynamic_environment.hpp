@@ -7,7 +7,7 @@ namespace goblin_engineer {
 
     class dynamic_environment final :
             public context_t,
-            public abstract_environment {
+            public actor_zeta::environment::abstract_environment {
     public:
 
         explicit dynamic_environment(dynamic_config&&);
@@ -15,8 +15,8 @@ namespace goblin_engineer {
         ~dynamic_environment() override;
 
         template <typename Manager,typename ...Args>
-        auto add_manager_service(Args &&...args) -> Manager* {
-            return supervisor<Manager>(config(),env(),std::forward<Args>(args)...);
+        auto add_manager_service(Args&&...args) -> Manager* {
+            return supervisor<Manager>(config(),environment(),std::forward<Args>(args)...);
         }
 
         void initialize();
@@ -27,9 +27,9 @@ namespace goblin_engineer {
 
     private:
 
-        auto env() -> goblin_engineer::abstract_environment *;
+        auto environment() -> goblin_engineer::dynamic_environment *;
 
-        auto config() -> dynamic_config& ;
+        auto config() -> dynamic_config& override ;
 
         auto start() -> std::size_t override ;
 

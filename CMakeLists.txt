@@ -49,6 +49,7 @@ list(APPEND ${PROJECT_NAME}_header
 )
 
 list(APPEND ${PROJECT_NAME}_source
+        source/abstract_service.cpp
         source/dynamic.cpp
         source/dynamic_environment.cpp
 )
