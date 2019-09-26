@@ -2,7 +2,9 @@
 
 
 class logger : public goblin_engineer::abstract_service {
-
+public:
+    explicit logger(goblin_engineer::abstract_manager_service_lite*manager):abstract_service(manager,"logger"){}
+    ~logger() override = default;
 };
 
 
@@ -27,8 +29,10 @@ int main() {
     goblin_engineer::dynamic_config cfg;
     goblin_engineer::dynamic_environment app(std::move(cfg));
 
-    app.add_manager_service<file_storage>();
-    app.add_manager_service<http>();
+    auto* files = app.add_manager_service<file_storage>();
+    auto* http1 = app.add_manager_service<http>();
+
+///    http1->join<logger>(http1);
 
 
     app.initialize();

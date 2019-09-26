@@ -68,7 +68,7 @@ namespace goblin_engineer {
         return *coordinator_;
     }
 
-    auto dynamic_environment:: config() -> dynamic_config & {
+    auto dynamic_environment:: configuration() -> dynamic_config & {
         return configuration_;
     }
 

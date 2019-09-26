@@ -14,9 +14,9 @@ namespace goblin_engineer {
 
         ~dynamic_environment() override;
 
-        template <typename Manager,typename ...Args>
-        auto add_manager_service(Args&&...args) -> Manager* {
-            return supervisor<Manager>(config(),environment(),std::forward<Args>(args)...);
+        template <class Manager,typename ...Args>
+        auto add_manager_service(Args&&...args){
+            return supervisor<Manager>(configuration(), environment(), std::forward<Args>(args)...);
         }
 
         void initialize();
@@ -29,7 +29,7 @@ namespace goblin_engineer {
 
         auto environment() -> goblin_engineer::dynamic_environment *;
 
-        auto config() -> dynamic_config& override ;
+        auto configuration() -> dynamic_config& override ;
 
         auto start() -> std::size_t override ;
 

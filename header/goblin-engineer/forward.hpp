@@ -15,4 +15,6 @@ namespace goblin_engineer {
 
     struct abstract_service;
 
+    struct abstract_manager_service_lite;
+
 }

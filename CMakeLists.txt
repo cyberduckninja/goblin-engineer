@@ -43,6 +43,7 @@ list(APPEND ${PROJECT_NAME}_header
         header/goblin-engineer/detail/converters.hpp
         header/goblin-engineer/detail/constructors.hpp
         header/goblin-engineer/detail/object.hpp
+        header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
         header/goblin-engineer/context.hpp
         header/goblin-engineer/dynamic.hpp

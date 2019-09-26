@@ -14,7 +14,7 @@ namespace goblin_engineer {
 
         virtual auto background() const ->  boost::thread_group & = 0;
 
-        virtual auto config() -> dynamic_config& = 0;
+        virtual auto configuration() -> dynamic_config& = 0;
 
         virtual ~context_t() = default;
     };
