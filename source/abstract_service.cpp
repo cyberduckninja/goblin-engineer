@@ -5,8 +5,6 @@ namespace goblin_engineer {
 
     using abstract_environment = actor_zeta::environment::abstract_environment;
 
-    abstract_manager_service_heavy::abstract_manager_service_heavy(goblin_engineer::dynamic_environment *env, char const *name) : heavy(static_cast<abstract_environment*>(env),name) {}
-
     abstract_manager_service_lite::abstract_manager_service_lite(dynamic_environment *env, char const *name) : lite(name) {}
 
     auto abstract_manager_service_lite::join(actor_zeta::supervisor &) -> void {}

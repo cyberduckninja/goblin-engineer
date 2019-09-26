@@ -6,9 +6,9 @@ class logger : public goblin_engineer::abstract_service {
 };
 
 
-class file_storage final : public goblin_engineer::abstract_manager_service_heavy {
+class file_storage final : public goblin_engineer::abstract_manager_service_lite {
 public:
-    file_storage(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service_heavy(env,"file_storage"){}
+    file_storage(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service_lite(env,"file_storage"){}
     ~file_storage() override = default;
     void startup(goblin_engineer::context_t *) override {}
 };

@@ -28,15 +28,6 @@ namespace goblin_engineer {
 
     };
 
-    struct abstract_manager_service_heavy : public heavy {
-
-        abstract_manager_service_heavy(dynamic_environment *env, char const*name);
-
-        ~abstract_manager_service_heavy() override = default;
-
-        virtual void startup(goblin_engineer::context_t *) = 0;
-    };
-
     struct abstract_manager_service_lite : public lite {
 
         abstract_manager_service_lite(dynamic_environment *env, char const*name);
