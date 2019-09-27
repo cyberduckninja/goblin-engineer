@@ -32,7 +32,6 @@ namespace goblin_engineer {
         auto join(base_actor *t) -> actor_zeta::actor::actor_address override;
 
         auto join(supervisor &) -> void override;
-
     };
 
 }

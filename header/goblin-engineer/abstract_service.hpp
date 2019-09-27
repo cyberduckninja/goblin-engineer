@@ -19,7 +19,6 @@ namespace goblin_engineer {
         virtual void startup(context_t *) = 0;
 
         virtual void shutdown() = 0;
-
     };
 
 

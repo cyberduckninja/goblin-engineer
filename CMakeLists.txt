@@ -17,7 +17,7 @@ else()
 endif()
 
 #############################################################################################
-#BOOST
+#CONAN
 
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -36,7 +36,7 @@ endif()
     )
 
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
-
+#CONAN
 #############################################################################################
 
 list(APPEND ${PROJECT_NAME}_header
@@ -52,7 +52,7 @@ list(APPEND ${PROJECT_NAME}_header
 )
 
 list(APPEND ${PROJECT_NAME}_source
-        source/abstract_service.cpp
+        source/abstract_manager_service.cpp
         source/dynamic.cpp
         source/dynamic_environment.cpp
 )
