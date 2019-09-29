@@ -1,12 +1,13 @@
 #pragma once
 
+#include <boost/asio.hpp>
+
 #include <goblin-engineer/forward.hpp>
-#include <goblin-engineer/context.hpp>
+#include <goblin-engineer/dynamic.hpp>
 
 namespace goblin_engineer {
 
     class dynamic_environment final :
-            public context_t,
             public actor_zeta::environment::abstract_environment {
     public:
 
@@ -27,24 +28,17 @@ namespace goblin_engineer {
 
         auto executor() -> actor_zeta::executor::abstract_executor & override ;
 
-        auto main_loop() const ->  boost::asio::io_context& override;
-
-        auto background() const -> boost::thread_group& override;
-
     private:
 
         auto environment() -> goblin_engineer::dynamic_environment *;
 
-        auto configuration() -> dynamic_config& override ;
+        auto configuration() -> dynamic_config&;
 
         auto start() -> std::size_t override ;
-
-        auto context() -> context_t *;
 
         goblin_engineer::dynamic_config configuration_;
         std::unique_ptr<actor_zeta::executor::abstract_executor>coordinator_;
         std::unique_ptr<boost::asio::io_context> io_context_;
-        std::unique_ptr<boost::thread_group> background_;
     };
 
 }

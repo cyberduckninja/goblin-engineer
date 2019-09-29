@@ -5,17 +5,14 @@ namespace goblin_engineer {
 
     using abstract_environment = actor_zeta::environment::abstract_environment;
 
-    template <class Actor >
-    inline auto send(Actor& actor,message msg){
+    template <class Sender >
+    inline auto send(const Sender& actor,message msg){
         actor->enqueue(std::move(msg));
     }
-
 
     abstract_manager_service::abstract_manager_service(dynamic_environment *env, actor_zeta::detail::string_view name)
         : lite(name)
         , executor_(env->executor())
-        , io_context_(env->main_loop())
-        , thread_group_(env->background())
         {
     }
 
@@ -26,8 +23,9 @@ namespace goblin_engineer {
     }
 
     auto abstract_manager_service::broadcast(message msg) -> bool {
-        for(auto&i:storage_){
-            send(i,msg.clone());
+        auto msg_tmp = std::move(msg);
+        for (auto &i:storage_) {
+            send(i, msg_tmp.clone());
         }
         return true;
     }
@@ -38,14 +36,6 @@ namespace goblin_engineer {
 
     void abstract_manager_service::enqueue(message, actor_zeta::executor::execution_device *) {
 
-    }
-
-    auto abstract_manager_service::loop() -> boost::asio::io_context& {
-        return io_context_;
-    }
-
-    auto abstract_manager_service::thread_pool() -> boost::thread_group & {
-        return thread_group_;
     }
 }
 

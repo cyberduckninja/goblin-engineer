@@ -28,14 +28,8 @@ namespace goblin_engineer {
 
         auto join(base_actor *t) -> actor_zeta::actor_address override;
 
-        auto loop() -> boost::asio::io_context&;
-
-        auto thread_pool() -> boost::thread_group&;
-
     private:
         actor_zeta::executor::abstract_executor & executor_;
-        boost::asio::io_context& io_context_;
-        boost::thread_group& thread_group_;
         std::vector<actor_zeta::actor::actor> storage_;
     };
 
