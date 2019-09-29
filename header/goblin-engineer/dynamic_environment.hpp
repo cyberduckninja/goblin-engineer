@@ -25,6 +25,12 @@ namespace goblin_engineer {
 
         void shutdown();
 
+        auto executor() -> actor_zeta::executor::abstract_executor & override ;
+
+        auto main_loop() const ->  boost::asio::io_context& override;
+
+        auto background() const -> boost::thread_group& override;
+
     private:
 
         auto environment() -> goblin_engineer::dynamic_environment *;
@@ -33,13 +39,7 @@ namespace goblin_engineer {
 
         auto start() -> std::size_t override ;
 
-        auto executor() -> actor_zeta::executor::abstract_executor & override ;
-
         auto context() -> context_t *;
-
-        auto main_loop() const ->  boost::asio::io_context& override;
-
-        auto background() const -> boost::thread_group& override;
 
         goblin_engineer::dynamic_config configuration_;
         std::unique_ptr<actor_zeta::executor::abstract_executor>coordinator_;

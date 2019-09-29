@@ -5,20 +5,47 @@ namespace goblin_engineer {
 
     using abstract_environment = actor_zeta::environment::abstract_environment;
 
-    abstract_manager_service_lite::abstract_manager_service_lite(dynamic_environment *env, char const *name) : lite(name) {}
+    template <class Actor >
+    inline auto send(Actor& actor,message msg){
+        actor->enqueue(std::move(msg));
+    }
 
-    auto abstract_manager_service_lite::join(actor_zeta::supervisor &) -> void {}
 
-    auto abstract_manager_service_lite::join(actor_zeta::actor::base_actor *t) -> actor_zeta::actor::actor_address {}
+    abstract_manager_service::abstract_manager_service(dynamic_environment *env, actor_zeta::detail::string_view name)
+        : lite(name)
+        , executor_(env->executor())
+        , io_context_(env->main_loop())
+        , thread_group_(env->background())
+        {
+    }
 
-    auto abstract_manager_service_lite::broadcast(message) -> bool {}
+    auto abstract_manager_service::join(base_actor *t) -> actor_zeta::actor_address {
+        auto address = t->address();
+        storage_.emplace_back(t);
+        return address;
+    }
 
-    auto abstract_manager_service_lite::executor() noexcept -> actor_zeta::executor::abstract_executor & {}
+    auto abstract_manager_service::broadcast(message msg) -> bool {
+        for(auto&i:storage_){
+            send(i,msg.clone());
+        }
+        return true;
+    }
 
-    auto abstract_manager_service_lite::startup() noexcept -> void {}
+    auto abstract_manager_service::executor() noexcept -> actor_zeta::executor::abstract_executor & {
+        return executor_;
+    }
 
-    auto abstract_manager_service_lite::shutdown() noexcept -> void {}
+    void abstract_manager_service::enqueue(message, actor_zeta::executor::execution_device *) {
 
-    void abstract_manager_service_lite::enqueue(message, actor_zeta::executor::execution_device *) {}
+    }
+
+    auto abstract_manager_service::loop() -> boost::asio::io_context& {
+        return io_context_;
+    }
+
+    auto abstract_manager_service::thread_pool() -> boost::thread_group & {
+        return thread_group_;
+    }
 }
 

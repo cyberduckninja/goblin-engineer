@@ -1,25 +1,25 @@
 #include <goblin-engineer.hpp>
 
+class http;
+class file_storage;
 
 class logger : public goblin_engineer::abstract_service {
 public:
-    explicit logger(goblin_engineer::abstract_manager_service_lite*manager):abstract_service(manager,"logger"){}
+    explicit logger(http *manager):goblin_engineer::abstract_service(manager,"logger"){}
     ~logger() override = default;
 };
 
 
-class file_storage final : public goblin_engineer::abstract_manager_service_lite {
+class file_storage final : public goblin_engineer::abstract_manager_service {
 public:
-    file_storage(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service_lite(env,"file_storage"){}
+    file_storage(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service(env,"file_storage"){}
     ~file_storage() override = default;
-    void startup(goblin_engineer::context_t *) override {}
 };
 
-class http final : public goblin_engineer::abstract_manager_service_lite {
+class http final : public goblin_engineer::abstract_manager_service {
 public:
-    http(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service_lite(env,"file_storage"){}
+    http(goblin_engineer::dynamic_config&,goblin_engineer::dynamic_environment*env):abstract_manager_service(env,"http"){}
     ~http() override = default;
-    void startup(goblin_engineer::context_t *) override {}
 };
 
 
@@ -32,10 +32,10 @@ int main() {
     auto* files = app.add_manager_service<file_storage>();
     auto* http1 = app.add_manager_service<http>();
 
-    ///http1->join<logger>(http1);
+    auto log =  goblin_engineer::make_service<logger>(http1);
 
 
     app.initialize();
     app.startup();
-
+    return 0;
 }

@@ -13,8 +13,8 @@ namespace goblin_engineer {
 
     class dynamic_config;
 
-    struct abstract_service;
+    ///struct abstract_service;
 
-    struct abstract_manager_service_lite;
+    struct abstract_manager_service;
 
 }
