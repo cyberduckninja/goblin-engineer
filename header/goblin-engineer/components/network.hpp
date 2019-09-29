@@ -9,7 +9,7 @@ namespace goblin_engineer { namespace components{
     class network_manager_service : public abstract_manager_service {
     public:
 
-        rm -rf .git/modules/a/submodulenetwork_manager_service(dynamic_environment* env,actor_zeta::detail::string_view name)
+        network_manager_service(dynamic_environment* env,actor_zeta::detail::string_view name)
             :abstract_manager_service(env, name )
             {
 
