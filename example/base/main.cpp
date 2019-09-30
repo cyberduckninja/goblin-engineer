@@ -6,11 +6,8 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio.hpp>
 #include <chrono>
-#include <cstdlib>
 #include <ctime>
-#include <iostream>
 #include <memory>
-#include <string>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -18,7 +15,7 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 struct data_t final {
-    data_t(std::uintptr_t id):id_(id){}
+    explicit data_t(std::uintptr_t id):id_(id){}
     std::uintptr_t id_ ;
     http::request<http::dynamic_body> request_;
     http::response<http::dynamic_body> response_;
@@ -154,7 +151,10 @@ class worker_t : public goblin_engineer::abstract_service {
 public:
     explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
+            "",
+            [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
 
+            }
         );
     }
 
