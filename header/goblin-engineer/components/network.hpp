@@ -13,6 +13,11 @@ namespace goblin_engineer { namespace components{
             : abstract_manager_service(env, name )
             , io_context_(concurrency_hint)
             {
+            io_context_.run();
+        }
+
+        ~network_manager_service() override {
+            io_context_.stop();
         }
 
         auto loop() -> boost::asio::io_context& {

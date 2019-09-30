@@ -8,6 +8,7 @@
 #include <chrono>
 #include <ctime>
 #include <memory>
+#include <iostream>
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -24,9 +25,10 @@ struct data_t final {
 
 class http_connection : public std::enable_shared_from_this<http_connection> {
 public:
-    http_connection(tcp::socket socket)
+    http_connection(tcp::socket socket,const actor_zeta::actor_address&address)
         : socket_(std::move(socket))
         , data_(reinterpret_cast<std::uintptr_t>(this))
+        , address_(address)
         {}
 
     void start() {
@@ -57,6 +59,8 @@ private:
 
     data_t data_;
 
+    actor_zeta::actor_address address_;
+
     net::steady_timer deadline_{socket_.get_executor(), std::chrono::seconds(60)};
 
 
@@ -77,7 +81,7 @@ private:
     }
 
     void process_request() {
-
+        actor_zeta::send(address_,address_,"router",std::move(data_));
     }
 
     void check_deadline() {
@@ -95,16 +99,23 @@ private:
 
 using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<http_connection>>;
 
-void http_server(tcp::acceptor &acceptor, tcp::socket &socket,connect_storage_t&storage) {
+void http_server(
+        tcp::acceptor &acceptor,
+        tcp::socket &socket,
+        connect_storage_t &storage,
+        const actor_zeta::actor_address &address
+) {
     acceptor.async_accept(
             socket,
             [&](beast::error_code ec) {
                 if (!ec) {
-                    auto connect = std::make_shared<http_connection>(std::move(socket));
-                    storage.emplace(reinterpret_cast<std::uintptr_t>(connect.get()),connect);
+                    auto connect = std::make_shared<http_connection>(std::move(socket), address);
+                    storage.emplace(reinterpret_cast<std::uintptr_t>(connect.get()), connect);
                     connect->start();
                 }
-                http_server(acceptor, socket,storage);
+
+                http_server(acceptor, socket, storage, address);
+
             }
     );
 }
@@ -114,16 +125,25 @@ class http_t final : public goblin_engineer::components::network_manager_service
 public:
     http_t(goblin_engineer::dynamic_config &, goblin_engineer::dynamic_environment *env)
     : network_manager_service(env,"http",1)
-    , acceptor(loop(),tcp::v4(),9999)
+    , acceptor(loop(),{tcp::v4(),9999})
     , socket(loop())
     {
-        http_server(acceptor, socket,connect_storage_);
         add_handler(
                 "write",
                 [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
                     write(std::move(data));
                 }
         );
+
+        add_handler(
+                "router",
+                [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
+                    actor_zeta::send(addresses("worker"),address(),"router",std::move(data));
+                }
+        );
+
+        http_server(acceptor, socket,connect_storage_,address());
+
     }
 
     void write(data_t d){
@@ -151,9 +171,9 @@ class worker_t : public goblin_engineer::abstract_service {
 public:
     explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
-            "",
+            "replay",
             [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
-
+                std::cerr<< "!" << std::endl;
             }
         );
     }
