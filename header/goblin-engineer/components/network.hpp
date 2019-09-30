@@ -12,12 +12,17 @@ namespace goblin_engineer { namespace components{
         network_manager_service(dynamic_environment* env,actor_zeta::detail::string_view name,std::size_t concurrency_hint)
             : abstract_manager_service(env, name )
             , io_context_(concurrency_hint)
+            , thread_(
+                    [&](){
+                        io_context_.run();
+                    }
+              )
             {
-            io_context_.run();
         }
 
         ~network_manager_service() override {
             io_context_.stop();
+            thread_.join();
         }
 
         auto loop() -> boost::asio::io_context& {
@@ -25,6 +30,7 @@ namespace goblin_engineer { namespace components{
         }
 
     protected:
+        std::thread thread_;
         boost::asio::io_context io_context_;
     };
 
