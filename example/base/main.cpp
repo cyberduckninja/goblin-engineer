@@ -116,7 +116,7 @@ void http_server(tcp::acceptor &acceptor, tcp::socket &socket,connect_storage_t&
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
     http_t(goblin_engineer::dynamic_config &, goblin_engineer::dynamic_environment *env)
-    : network_manager_service(env,"http")
+    : network_manager_service(env,"http",1)
     , acceptor(loop(),tcp::v4(),9999)
     , socket(loop())
     {
@@ -131,10 +131,13 @@ public:
 
     void write(data_t d){
         data_t tmp = std::move(d);
+
         auto it =  connect_storage_.find(tmp.id_);
-        if( it != connect_storage_.end() ){
+
+        if( it != connect_storage_.end() ) {
             it->second->write(std::move((tmp)));
         }
+
     }
 
     ~http_t() override = default;
