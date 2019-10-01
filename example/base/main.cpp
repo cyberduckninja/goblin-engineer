@@ -33,7 +33,6 @@ public:
 
     void start() {
         read_request();
-        check_deadline();
     }
 
     void write(data_t d){
@@ -81,51 +80,18 @@ private:
     }
 
     void process_request() {
-        actor_zeta::send(address_,address_,"router",std::move(data_));
+        actor_zeta::send(actor_zeta::actor_address(address_),actor_zeta::actor_address(address_),"router",std::move(data_));
     }
 
-    void check_deadline() {
-        auto self = shared_from_this();
-
-        deadline_.async_wait(
-                [self](beast::error_code ec) {
-                    if (!ec) {
-                        self->socket_.close(ec);
-                    }
-                }
-        );
-    }
 };
 
 using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<http_connection>>;
-
-void http_server(
-        tcp::acceptor &acceptor,
-        tcp::socket &socket,
-        connect_storage_t &storage,
-        const actor_zeta::actor_address &address
-) {
-    acceptor.async_accept(
-            socket,
-            [&](beast::error_code ec) {
-                if (!ec) {
-                    auto connect = std::make_shared<http_connection>(std::move(socket), address);
-                    storage.emplace(reinterpret_cast<std::uintptr_t>(connect.get()), connect);
-                    connect->start();
-                }
-
-                http_server(acceptor, socket, storage, address);
-
-            }
-    );
-}
-
 
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
     http_t(goblin_engineer::dynamic_config &, goblin_engineer::dynamic_environment *env)
     : network_manager_service(env,"http",1)
-    , acceptor(loop(),{tcp::v4(),9999})
+    , acceptor_(loop(),{tcp::v4(),9999})
     , socket(loop())
     {
         add_handler(
@@ -138,11 +104,14 @@ public:
         add_handler(
                 "router",
                 [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
+                    for(auto&i:contacts){
+                        std::cerr << i.first << std::endl;
+                    }
                     actor_zeta::send(addresses("worker"),address(),"router",std::move(data));
                 }
         );
 
-        http_server(acceptor, socket,connect_storage_,address());
+        do_accept();
 
     }
 
@@ -160,8 +129,29 @@ public:
     ~http_t() override = default;
 
 private:
+    void do_accept() {
+
+        acceptor_.async_accept(
+                net::make_strand(acceptor_.get_executor()),
+                beast::bind_front_handler(&http_t::on_accept,this)
+        );
+    }
+
+    void on_accept(boost::system::error_code ec,tcp::socket socket) {
+        if (ec) {
+            std::cerr << "accept" << ec.message() << std::endl;
+        } else {
+            auto connect = std::make_shared<http_connection>(std::move(socket), address());
+            connect_storage_.emplace(reinterpret_cast<std::uintptr_t>(connect.get()), connect);
+            connect->start();
+        }
+
+        do_accept();
+    }
+
+
     connect_storage_t connect_storage_;
-    tcp::acceptor acceptor;
+    tcp::acceptor acceptor_;
     tcp::socket socket;
 
 };

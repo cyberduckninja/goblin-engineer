@@ -1,5 +1,6 @@
 #include <goblin-engineer/abstract_manager_service.hpp>
 #include <goblin-engineer/dynamic_environment.hpp>
+#include <iostream>
 
 namespace goblin_engineer {
 
@@ -34,8 +35,9 @@ namespace goblin_engineer {
         return executor_;
     }
 
-    void abstract_manager_service::enqueue(message, actor_zeta::executor::execution_device *) {
-
+    void abstract_manager_service::enqueue(message msg, actor_zeta::executor::execution_device *) {
+        actor_zeta::context tmp(this,std::move(msg));
+        dispatch().execute(tmp);
     }
 }
 
