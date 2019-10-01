@@ -34,6 +34,11 @@ namespace goblin_engineer { namespace components {
             return io_context_;
         }
 
+        void enqueue(message msg, actor_zeta::executor::execution_device *) override {
+            actor_zeta::context tmp(this,std::move(msg));
+            dispatch().execute(tmp);
+        }
+
     protected:
         boost::asio::io_context io_context_;
         boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_;

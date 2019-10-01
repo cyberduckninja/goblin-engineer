@@ -35,9 +35,5 @@ namespace goblin_engineer {
         return executor_;
     }
 
-    void abstract_manager_service::enqueue(message msg, actor_zeta::executor::execution_device *) {
-        actor_zeta::context tmp(this,std::move(msg));
-        dispatch().execute(tmp);
-    }
 }
 

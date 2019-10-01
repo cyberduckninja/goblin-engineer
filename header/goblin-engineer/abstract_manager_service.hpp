@@ -20,8 +20,6 @@ namespace goblin_engineer {
 
         ~abstract_manager_service() override = default;
 
-        void enqueue(message, actor_zeta::executor::execution_device *) override;
-
         auto executor() noexcept -> actor_zeta::executor::abstract_executor & override;
 
         auto broadcast(message) -> bool override;
