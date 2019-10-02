@@ -1,9 +1,6 @@
 #pragma once
 
-#include <deque>
-
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
+#include <vector>
 
 #include <goblin-engineer/forward.hpp>
 #include <actor-zeta/core.hpp>
@@ -13,8 +10,6 @@ namespace goblin_engineer {
     using lite = actor_zeta::supervisor;
 
     struct abstract_manager_service : public lite {
-
-        using actor_zeta::supervisor::join;
 
         abstract_manager_service(dynamic_environment *, actor_zeta::detail::string_view );
 
