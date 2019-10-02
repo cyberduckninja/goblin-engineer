@@ -58,6 +58,7 @@ list(APPEND ${PROJECT_NAME}_source
         source/abstract_manager_service.cpp
         source/dynamic.cpp
         source/dynamic_environment.cpp
+        source/network.cpp
 )
 
 add_library(

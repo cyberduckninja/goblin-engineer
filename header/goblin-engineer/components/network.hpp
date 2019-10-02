@@ -1,9 +1,9 @@
 #pragma once
 
+#include <goblin-engineer/forward.hpp>
 #include <goblin-engineer/abstract_manager_service.hpp>
-
 #include <boost/asio.hpp>
-#include <iostream>
+#include <boost/thread.hpp>
 
 namespace goblin_engineer { namespace components {
 
@@ -13,31 +13,13 @@ namespace goblin_engineer { namespace components {
                 dynamic_environment *env
                 , actor_zeta::detail::string_view name
                 , std::size_t concurrency_hint
-        )
-            : abstract_manager_service(env, name)
-            , io_context_(concurrency_hint)
-            , work_(boost::asio::make_work_guard(io_context_))
-            , threadpool_(env->background())
-        {
-            threadpool_.create_thread(
-                    [&]() {
-                        io_context_.run();
-                    }
-            );
-        }
+        );
 
-        ~network_manager_service() override {
-            io_context_.stop();
-        }
+        ~network_manager_service() override;
 
-        auto loop() -> boost::asio::io_context & {
-            return io_context_;
-        }
+        auto loop() -> boost::asio::io_context &;
 
-        void enqueue(message msg, actor_zeta::executor::execution_device *) override {
-            actor_zeta::context tmp(this,std::move(msg));
-            dispatch().execute(tmp);
-        }
+        void enqueue(message msg, actor_zeta::executor::execution_device *) override;
 
     protected:
         boost::asio::io_context io_context_;
