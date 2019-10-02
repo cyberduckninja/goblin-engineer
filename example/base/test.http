@@ -6,5 +6,8 @@
 # * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 GET http://0.0.0.0:9999
+Content-Type: application/json
+
+{"a":1,"b":2}
 
 ###

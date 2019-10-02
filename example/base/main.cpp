@@ -36,17 +36,15 @@ public:
     }
 
     void write(data_t d){
-        auto tmp = std::move(d);
+        data_ = std::move(d);
         auto self = shared_from_this();
 
-        tmp.response_.set(http::field::content_length, tmp.response_.body().size());
-
+        data_.response_.set(http::field::content_length, data_.response_.body().size());
         http::async_write(
                 socket_,
-                tmp.response_,
+                data_.response_,
                 [self](beast::error_code ec, std::size_t) {
                     self->socket_.shutdown(tcp::socket::shutdown_send, ec);
-                    self->deadline_.cancel();
                 }
         );
     }
@@ -59,8 +57,6 @@ private:
     data_t data_;
 
     actor_zeta::actor_address address_;
-
-    net::steady_timer deadline_{socket_.get_executor(), std::chrono::seconds(60)};
 
 
     void read_request() {
@@ -104,10 +100,7 @@ public:
         add_handler(
                 "router",
                 [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
-                    for(auto&i:contacts){
-                        std::cerr << i.first << std::endl;
-                    }
-                    actor_zeta::send(addresses("worker"),address(),"router",std::move(data));
+                    actor_zeta::send(addresses("worker"),address(),"replay",std::move(data));
                 }
         );
 
@@ -163,7 +156,9 @@ public:
         add_handler(
             "replay",
             [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
-                std::cerr<< "!" << std::endl;
+                data.response_.body()= data.request_.body();
+                data.response_.prepare_payload();
+                actor_zeta::send(addresses("http"),address(),"write",std::move(data));
             }
         );
     }

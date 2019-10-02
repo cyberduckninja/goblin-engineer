@@ -19,7 +19,7 @@ namespace goblin_engineer {
 
     auto abstract_manager_service::join(base_actor *t) -> actor_zeta::actor_address {
         auto address = t->address();
-        storage_.emplace_back(t);
+        actor_zeta::link(this,address);
         return address;
     }
 
