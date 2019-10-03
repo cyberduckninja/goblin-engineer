@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(ALLOW_EXAMPLES "Enable building examples" OFF)
+
 #############################################################################################
 #CONAN
 
@@ -75,4 +77,6 @@ target_include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/header
 )
 
-add_subdirectory(example)
+if(ALLOW_EXAMPLES)
+    add_subdirectory(examples)
+endif()
