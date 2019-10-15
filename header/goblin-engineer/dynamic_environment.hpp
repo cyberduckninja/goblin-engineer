@@ -18,7 +18,7 @@ namespace goblin_engineer {
 
         template <class Manager,typename ...Args>
         auto add_manager_service(Args&&...args)-> Manager* {
-            auto * tmp  = new Manager(configuration(), environment(), std::forward<Args>(args)...);
+            auto * tmp  = new Manager(environment(), configuration(), std::forward<Args>(args)...);
             storage_.emplace_back(actor_zeta::intrusive_ptr<Manager>(tmp));
             return tmp;
         }

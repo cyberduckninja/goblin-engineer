@@ -18,4 +18,5 @@ conan remote add jinntechio: https://api.bintray.com/conan/jinntechio/public-con
 goblin-engineer/1.0.0a1@jinntechio/testing
 ```
 
-
+# Getting started
+The library has a "service" abstraction which allows you to bind handlers which would call asynchronously on completing HTTP request
