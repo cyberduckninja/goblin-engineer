@@ -43,7 +43,6 @@ namespace goblin_engineer {
 
     root_manager::~root_manager() {
         background_->join_all();
-        io_context_->stopped();
         std::cerr << "~goblin-engineer" << std::endl;
     }
 
