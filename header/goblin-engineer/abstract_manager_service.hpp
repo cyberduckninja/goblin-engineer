@@ -11,7 +11,7 @@ namespace goblin_engineer {
 
     struct abstract_manager_service : public lite {
 
-        abstract_manager_service(dynamic_environment *, actor_zeta::detail::string_view );
+        abstract_manager_service(root_manager *, actor_zeta::detail::string_view );
 
         ~abstract_manager_service() override = default;
 

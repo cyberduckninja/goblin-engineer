@@ -9,12 +9,12 @@
 
 namespace goblin_engineer {
 
-    class dynamic_environment final {
+    class root_manager final {
     public:
 
-        explicit dynamic_environment(dynamic_config&&);
+        explicit root_manager(dynamic_config&&);
 
-        ~dynamic_environment();
+        ~root_manager();
 
         template <class Manager,typename ...Args>
         auto add_manager_service(Args&&...args)-> Manager* {
@@ -35,7 +35,7 @@ namespace goblin_engineer {
 
     private:
 
-        auto environment() -> goblin_engineer::dynamic_environment *;
+        auto environment() -> root_manager *;
 
         auto configuration() -> dynamic_config&;
 

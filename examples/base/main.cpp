@@ -85,7 +85,7 @@ using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<htt
 
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
-    http_t(goblin_engineer::dynamic_environment *env,goblin_engineer::dynamic_config &)
+    http_t(goblin_engineer::root_manager *env,goblin_engineer::dynamic_config &)
     : network_manager_service(env,"http",1)
     , acceptor_(loop(),{tcp::v4(),9999})
     , socket(loop())
@@ -170,7 +170,7 @@ public:
 int main() {
 
     goblin_engineer::dynamic_config cfg;
-    goblin_engineer::dynamic_environment app(std::move(cfg));
+    goblin_engineer::root_manager app(std::move(cfg));
 
     auto *http1 = app.add_manager_service<http_t>();
     auto log = goblin_engineer::make_service<worker_t>(http1);

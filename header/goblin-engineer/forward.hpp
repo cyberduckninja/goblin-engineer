@@ -6,7 +6,7 @@ namespace goblin_engineer {
 
     using message = actor_zeta::messaging::message;
 
-    class dynamic_environment;
+    class root_manager;
 
     class dynamic_config;
 

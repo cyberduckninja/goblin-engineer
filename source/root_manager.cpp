@@ -1,4 +1,4 @@
-#include <goblin-engineer/dynamic_environment.hpp>
+#include <goblin-engineer/root_manager.hpp>
 
 #include <forward_list>
 #include <iostream>
@@ -11,20 +11,20 @@
 
 namespace goblin_engineer {
 
-    void dynamic_environment::shutdown() {
+    void root_manager::shutdown() {
         io_context_->stop();
     }
 
-    void dynamic_environment::startup() {
+    void root_manager::startup() {
 
         start();
 
         shutdown();
     }
 
-    void dynamic_environment::initialize() {}
+    void root_manager::initialize() {}
 
-    dynamic_environment::dynamic_environment(dynamic_config &&f)
+    root_manager::root_manager(dynamic_config &&f)
         : coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
         , io_context_(std::make_unique<boost::asio::io_context>())
         , background_(std::make_unique<boost::thread_group>())
@@ -41,30 +41,30 @@ namespace goblin_engineer {
 
     }
 
-    dynamic_environment::~dynamic_environment() {
+    root_manager::~root_manager() {
         background_->join_all();
         io_context_->stopped();
         std::cerr << "~goblin-engineer" << std::endl;
     }
 
-    std::size_t dynamic_environment::start() {
+    std::size_t root_manager::start() {
         executor().start();
         return io_context_->run();
     }
 
-    auto dynamic_environment::executor() -> actor_zeta::executor::abstract_executor & {
+    auto root_manager::executor() -> actor_zeta::executor::abstract_executor & {
         return *coordinator_;
     }
 
-    auto dynamic_environment:: configuration() -> dynamic_config & {
+    auto root_manager:: configuration() -> dynamic_config & {
         return configuration_;
     }
 
-    auto dynamic_environment::environment() -> goblin_engineer::dynamic_environment  * {
-        return static_cast<goblin_engineer::dynamic_environment  *>(this);
+    auto root_manager::environment() -> root_manager* {
+        return static_cast<root_manager*>(this);
     }
 
-    auto dynamic_environment::background() const -> boost::thread_group & {
+    auto root_manager::background() const -> boost::thread_group & {
         return *background_;
     }
 }

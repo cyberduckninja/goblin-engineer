@@ -1,11 +1,11 @@
 #include <goblin-engineer/components/network.hpp>
 
-#include <goblin-engineer/dynamic_environment.hpp>
+#include <goblin-engineer/root_manager.hpp>
 
 namespace goblin_engineer { namespace components {
 
         network_manager_service::network_manager_service(
-                goblin_engineer::dynamic_environment *env,
+                goblin_engineer::root_manager *env,
                 actor_zeta::detail::string_view name,
                 std::size_t concurrency_hint
         )

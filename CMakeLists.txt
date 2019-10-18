@@ -14,6 +14,16 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(ALLOW_EXAMPLES "Enable building examples" OFF)
 
+option(DEV_MODE "developer mode" OFF)
+
+if (DEV_MODE)
+    add_compile_options(
+            -v
+            -Wall
+            -Wextra
+    )
+endif ()
+
 #############################################################################################
 #CONAN
 
@@ -48,14 +58,14 @@ list(APPEND ${PROJECT_NAME}_header
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
         header/goblin-engineer/dynamic.hpp
-        header/goblin-engineer/dynamic_environment.hpp
+        header/goblin-engineer/root_manager.hpp
         header/goblin-engineer/forward.hpp
 )
 
 list(APPEND ${PROJECT_NAME}_source
         source/abstract_manager_service.cpp
         source/dynamic.cpp
-        source/dynamic_environment.cpp
+        source/root_manager.cpp
         source/network.cpp
 )
 

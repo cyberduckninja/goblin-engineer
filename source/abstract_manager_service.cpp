@@ -1,5 +1,5 @@
 #include <goblin-engineer/abstract_manager_service.hpp>
-#include <goblin-engineer/dynamic_environment.hpp>
+#include <goblin-engineer/root_manager.hpp>
 #include <iostream>
 
 namespace goblin_engineer {
@@ -11,7 +11,7 @@ namespace goblin_engineer {
         actor->enqueue(std::move(msg));
     }
 
-    abstract_manager_service::abstract_manager_service(dynamic_environment *env, actor_zeta::detail::string_view name)
+    abstract_manager_service::abstract_manager_service(root_manager *env, actor_zeta::detail::string_view name)
         : lite(name)
         , executor_(env->executor())
         {

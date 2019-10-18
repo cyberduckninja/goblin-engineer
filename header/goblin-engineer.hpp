@@ -4,7 +4,7 @@
 #include <goblin-engineer/dynamic.hpp>
 #include <goblin-engineer/abstract_manager_service.hpp>
 #include <goblin-engineer/abstract_service.hpp>
-#include <goblin-engineer/dynamic_environment.hpp>
+#include <goblin-engineer/root_manager.hpp>
 #include <actor-zeta/core.hpp>
 
 namespace goblin_engineer {
