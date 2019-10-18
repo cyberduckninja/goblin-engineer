@@ -9,17 +9,17 @@
 
 namespace goblin_engineer {
 
-    class root_manager final {
+    class root_manager final : public  actor_zeta::supervisor {
     public:
 
         explicit root_manager(dynamic_config&&);
 
-        ~root_manager();
+        ~root_manager() override;
 
         template <class Manager,typename ...Args>
         auto add_manager_service(Args&&...args)-> Manager* {
             auto * tmp  = new Manager(environment(), configuration(), std::forward<Args>(args)...);
-            storage_.emplace_back(actor_zeta::intrusive_ptr<Manager>(tmp));
+            join(actor_zeta::intrusive_ptr<Manager>(tmp));
             return tmp;
         }
 
@@ -29,11 +29,19 @@ namespace goblin_engineer {
 
         void shutdown();
 
-        auto executor() -> actor_zeta::executor::abstract_executor & ;
+        auto executor() noexcept -> actor_zeta::executor::abstract_executor & override ;
 
         auto background() const -> boost::thread_group &;
 
     private:
+
+        auto broadcast(message) -> bool override;
+
+         auto join(base_actor * ) -> actor_zeta::actor::actor_address override;
+
+         auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address;
+
+        void enqueue(message, actor_zeta::executor::execution_device *) override;
 
         auto environment() -> root_manager *;
 

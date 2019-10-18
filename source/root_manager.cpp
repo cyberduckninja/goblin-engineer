@@ -25,7 +25,8 @@ namespace goblin_engineer {
     void root_manager::initialize() {}
 
     root_manager::root_manager(dynamic_config &&f)
-        : coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
+        : supervisor("root_manager")
+        , coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
         , io_context_(std::make_unique<boost::asio::io_context>())
         , background_(std::make_unique<boost::thread_group>())
         , configuration_ (std::move(f))
@@ -51,7 +52,7 @@ namespace goblin_engineer {
         return io_context_->run();
     }
 
-    auto root_manager::executor() -> actor_zeta::executor::abstract_executor & {
+    auto root_manager::executor() noexcept -> actor_zeta::executor::abstract_executor & {
         return *coordinator_;
     }
 
@@ -65,5 +66,19 @@ namespace goblin_engineer {
 
     auto root_manager::background() const -> boost::thread_group & {
         return *background_;
+    }
+
+    auto root_manager::join(actor_zeta::actor::base_actor *) -> actor_zeta::actor::actor_address {
+        return actor_zeta::actor::actor_address();
+    }
+
+    void root_manager::enqueue(message, actor_zeta::executor::execution_device *) {}
+
+    auto root_manager::broadcast(message) -> bool {return  true; }
+
+    auto root_manager::join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address {
+        auto addresses =  tmp->address();
+        storage_.emplace_back(tmp);
+        return addresses;
     }
 }
