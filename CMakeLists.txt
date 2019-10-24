@@ -19,8 +19,24 @@ option(DEV_MODE "developer mode" OFF)
 if (DEV_MODE)
     add_compile_options(
             -v
+            #-Werror
+
             -Wall
             -Wextra
+            -Wpedantic
+
+            -Wcast-align
+            -Wcast-qual
+            #-Wconversion #-> boost problem
+            -Wctor-dtor-privacy
+            -Wenum-compare
+            #-Wfloat-equal
+            #-Wnon-virtual-dtor #->asio problem
+            #-Wold-style-cast #-> boost problem
+            -Woverloaded-virtual
+            -Wredundant-decls
+            #-Wsign-conversion #-> boost problem
+            -Wsign-promo
     )
 endif ()
 

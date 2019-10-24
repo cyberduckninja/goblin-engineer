@@ -28,6 +28,7 @@ namespace goblin_engineer { namespace components {
             return io_context_;
         }
 
+        ///TODO: problem in non thread safe
         void network_manager_service::enqueue(message msg, actor_zeta::executor::execution_device *) {
             actor_zeta::context tmp(this,std::move(msg));
             dispatch().execute(tmp);

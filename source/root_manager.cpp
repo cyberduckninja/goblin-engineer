@@ -3,8 +3,6 @@
 #include <forward_list>
 #include <iostream>
 
-#include <boost/asio.hpp>
-
 #include <goblin-engineer/dynamic.hpp>
 #include <goblin-engineer/abstract_service.hpp>
 
@@ -32,7 +30,7 @@ namespace goblin_engineer {
         , configuration_ (std::move(f))
         {
 
-        std::shared_ptr<boost::asio::signal_set> sigint_set(new boost::asio::signal_set(*io_context_, SIGINT, SIGTERM));
+        auto sigint_set = std::make_shared<boost::asio::signal_set>(*io_context_, SIGINT, SIGTERM);
         sigint_set->async_wait(
                 [sigint_set, this](const boost::system::error_code &/*err*/, int /*num*/) {
                     shutdown();
@@ -72,13 +70,23 @@ namespace goblin_engineer {
         return actor_zeta::actor::actor_address();
     }
 
-    void root_manager::enqueue(message, actor_zeta::executor::execution_device *) {}
+    void root_manager::enqueue(message, actor_zeta::executor::execution_device *) {
+        /// TODO: not implemented
+    }
 
-    auto root_manager::broadcast(message) -> bool {return  true; }
+    auto root_manager::broadcast(message msg) -> bool {
+        auto msg_ = std::move(msg);
+        for (auto &i:storage_) {
+            i->enqueue(msg_.clone());
+        }
+        return true;
+    }
 
     auto root_manager::join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address {
-        auto addresses =  tmp->address();
-        storage_.emplace_back(tmp);
-        return addresses;
+        auto supervisor = std::move(tmp);
+        auto address =  supervisor->address();
+        actor_zeta::link(this,address);
+        storage_.emplace_back(std::move(supervisor));
+        return address;
     }
 }
