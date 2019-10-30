@@ -12,7 +12,7 @@ namespace goblin_engineer {
     class root_manager final : public  actor_zeta::supervisor {
     public:
 
-        explicit root_manager(dynamic_config&&);
+        explicit root_manager(dynamic_config);
 
         ~root_manager() override;
 

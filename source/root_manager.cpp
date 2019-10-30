@@ -22,12 +22,12 @@ namespace goblin_engineer {
 
     void root_manager::initialize() {}
 
-    root_manager::root_manager(dynamic_config &&f)
+    root_manager::root_manager(dynamic_config f)
         : supervisor("root_manager")
+        , configuration_ (std::move(f))
         , coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
         , io_context_(std::make_unique<boost::asio::io_context>())
         , background_(std::make_unique<boost::thread_group>())
-        , configuration_ (std::move(f))
         {
 
         auto sigint_set = std::make_shared<boost::asio::signal_set>(*io_context_, SIGINT, SIGTERM);
@@ -70,8 +70,14 @@ namespace goblin_engineer {
         return actor_zeta::actor::actor_address();
     }
 
-    void root_manager::enqueue(message, actor_zeta::executor::execution_device *) {
-        /// TODO: not implemented
+    void root_manager::enqueue(message msg, actor_zeta::executor::execution_device *) {
+        boost::asio::post(
+                *io_context_,
+                [this, msg = std::move(msg)]() mutable {
+                    actor_zeta::actor::context tmp(this, std::move(msg));
+                    dispatch().execute(tmp);
+                }
+        );
     }
 
     auto root_manager::broadcast(message msg) -> bool {
