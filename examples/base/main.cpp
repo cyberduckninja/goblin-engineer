@@ -1,3 +1,10 @@
+/*
+\file
+\brief Basic example
+
+This example shows how to use basic functionality of the library
+*/
+
 #include <goblin-engineer.hpp>
 #include <goblin-engineer/components/network.hpp>
 
@@ -15,6 +22,11 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
+/*
+\brief Example of messages
+
+Describe type of data for our usage
+*/
 struct data_t final {
     explicit data_t(std::uintptr_t id):id_(id){}
     std::uintptr_t id_ ;
@@ -22,7 +34,11 @@ struct data_t final {
     http::response<http::dynamic_body> response_;
 };
 
+/*
+\brief Additional class for out goals
 
+Describe additional class for our http_t component
+*/
 class http_connection : public std::enable_shared_from_this<http_connection> {
 public:
     http_connection(tcp::socket socket,const actor_zeta::actor_address&address)
@@ -83,6 +99,11 @@ private:
 
 using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<http_connection>>;
 
+/*
+\brief Example of creating component
+
+Creating basic http component with possbibility to write and route some type of data
+*/
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
     http_t(goblin_engineer::root_manager *env,goblin_engineer::dynamic_config &)
@@ -149,7 +170,11 @@ private:
 
 };
 
+/*
+\brief Example of creating inherited service
 
+Creating service worker with handler for sending data
+*/
 class worker_t : public goblin_engineer::abstract_service {
 public:
     explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
@@ -166,15 +191,19 @@ public:
     ~worker_t() override = default;
 };
 
+/*
+\brief Main function
 
+This function create application with http manager and one service worker_t
+*/
 int main() {
-    goblin_engineer::dynamic_config cfg;
-    goblin_engineer::root_manager app(std::move(cfg));
+    goblin_engineer::dynamic_config cfg;                           ///< Create default config
+    goblin_engineer::root_manager app(std::move(cfg));             ///< Create manager with out confing
 
-    auto *http1 = app.add_manager_service<http_t>();
-    auto log = goblin_engineer::make_service<worker_t>(http1);
+    auto *http1 = app.add_manager_service<http_t>();               ///< Add to our manager manager-service for http
+    auto log = goblin_engineer::make_service<worker_t>(http1);     ///< Add service(?)
 
-    app.initialize();
+    app.initialize();                                              
     app.startup();
 
     return 0;
