@@ -16,7 +16,7 @@ namespace goblin_engineer {
             typename Supervisor,
             typename... Args
     >
-    inline auto make_service(Supervisor* supervisor, Args&&... args){
+    inline auto make_service(actor_zeta::intrusive_ptr<Supervisor> supervisor, Args&&... args){
         return make_actor<Actor>(supervisor,std::forward<Args>(args)...);
     }
 

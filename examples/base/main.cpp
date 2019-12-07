@@ -152,7 +152,7 @@ private:
 
 class worker_t : public goblin_engineer::abstract_service {
 public:
-    explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
+    explicit worker_t(actor_zeta::intrusive_ptr<http_t>manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
             "replay",
             [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
@@ -171,7 +171,7 @@ int main() {
     goblin_engineer::dynamic_config cfg;
     goblin_engineer::root_manager app(std::move(cfg));
 
-    auto *http1 = app.add_manager_service<http_t>();
+    auto http1 = app.add_manager_service<http_t>();
     auto log = goblin_engineer::make_service<worker_t>(http1);
 
     app.initialize();
