@@ -1,5 +1,5 @@
 #pragma once
 
-#include <detail/dynamic.hpp>
-#include <detail/converters.hpp>
-#include <detail/constructors.hpp>
+#include <goblin-engineer/detail/dynamic.hpp>
+#include <goblin-engineer/detail/converters.hpp>
+#include <goblin-engineer/detail/constructors.hpp>

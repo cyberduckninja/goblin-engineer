@@ -1,3 +1,0 @@
-[submodule "dependency/actor-zeta"]
- 	path = dependency/actor-zeta
- 	url = https://github.com/smart-cloud/actor-zeta.git

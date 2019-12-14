@@ -259,7 +259,7 @@ namespace goblin_engineer {
 
 }
 
-#include "goblin-engineer/object.hpp"
+#include "goblin-engineer/detail/object.hpp"
 #include "constructors.hpp"
 #include "converters.hpp"
 

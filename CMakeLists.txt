@@ -1,52 +1,56 @@
-cmake_minimum_required(VERSION 2.8)
-
-set(CMAKE_CXX_STANDARD 14)
-
-set(project goblin-engineer)
+cmake_minimum_required(VERSION 3.0)
 
 set (CMAKE_PROJECT_VERSION_MAJOR 1)
 set (CMAKE_PROJECT_VERSION_MINOR 0)
 set (CMAKE_PROJECT_VERSION_PATCH 0)
 set (CMAKE_PROJECT_VERSION "${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH}")
 
-if (CMAKE_VERSION VERSION_LESS 3.0)
-    PROJECT(${project} CXX)
-else()
-    cmake_policy(SET CMP0048 NEW)
-    PROJECT(${project} VERSION "${CMAKE_PROJECT_VERSION}" LANGUAGES CXX)
-endif()
+cmake_policy(SET CMP0048 NEW)
+PROJECT(goblin-engineer VERSION "${CMAKE_PROJECT_VERSION}" LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+option(ALLOW_EXAMPLES "Enable building examples" OFF)
+
+option(DEV_MODE "developer mode" OFF)
+
+if (DEV_MODE)
+    add_compile_options(
+            -v
+            #-Werror
+
+            -Wall
+            -Wextra
+            -Wpedantic
+
+            -Wcast-align
+            -Wcast-qual
+            #-Wconversion #-> boost problem
+            -Wctor-dtor-privacy
+            -Wenum-compare
+            #-Wfloat-equal
+            #-Wnon-virtual-dtor #->asio problem
+            #-Wold-style-cast #-> boost problem
+            -Woverloaded-virtual
+            -Wredundant-decls
+            #-Wsign-conversion #-> boost problem
+            -Wsign-promo
+    )
+endif ()
 
 #############################################################################################
-#ACTOR-ZETA
-
-option(STANDALONE-ACTOR-ZETA ""  OFF)
-
-if(STANDALONE-ACTOR-ZETA)
-    set(path_actor_zeta ${actor-zeta-dir})
-else()
-    add_subdirectory(dependency/actor-zeta)
-    set(path_actor_zeta "dependency/actor-zeta")
-endif()
-
-include_directories(SYSTEM ${path_actor_zeta}/core)
-include_directories(SYSTEM ${path_actor_zeta}/io)
-
-#ACTOR-ZETA
-#############################################################################################
-
-#############################################################################################
-#BOOST
-
-option(CONAN ""  OFF)
-
-if(CONAN)
+#CONAN
 
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.13/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
     endif()
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+    conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
 
     conan_cmake_run(
             CONANFILE conanfile.txt
@@ -55,29 +59,9 @@ if(CONAN)
             NO_OUTPUT_DIRS
     )
 
-else()
-
-    set(BOOST_COMPONENTS
-            thread
-            date_time
-            system
-            filesystem
-            timer
-            chrono
-            program_options
-            unit_test_framework
-            locale
-            )
-
-    find_package (Boost 1.66 REQUIRED COMPONENTS ${BOOST_COMPONENTS})
-
-endif()
-
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
-
+#CONAN
 #############################################################################################
-
-include_directories(header)
 
 list(APPEND ${PROJECT_NAME}_header
         header/goblin-engineer/detail/constructors.hpp
@@ -85,23 +69,25 @@ list(APPEND ${PROJECT_NAME}_header
         header/goblin-engineer/detail/dynamic.hpp
         header/goblin-engineer/dynamic.hpp
 
-        header/goblin-engineer/abstract_plugin.hpp
+        header/goblin-engineer/components/network.hpp
+
+        header/goblin-engineer/detail/converters.hpp
+        header/goblin-engineer/detail/constructors.hpp
+
+        header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/context.hpp
-        header/goblin-engineer/data_provider.hpp
-        header/goblin-engineer/dynamic_environment.hpp
         header/goblin-engineer/forward.hpp
         header/goblin-engineer/log.hpp
-        header/goblin-engineer/metadata.hpp
-        header/goblin-engineer/object.hpp
-        header/goblin-engineer/plugin.hpp
-        )
+        header/goblin-engineer/dynamic.hpp
+        header/goblin-engineer/root_manager.hpp
+        header/goblin-engineer/forward.hpp
+)
 
 list(APPEND ${PROJECT_NAME}_source
-        source/data_provider.cpp
+        source/abstract_manager_service.cpp
         source/dynamic.cpp
-        source/dynamic_environment.cpp
-        source/plugin.cpp
+        source/root_manager.cpp
+        source/network.cpp
 )
 
 find_program(CCACHE_FOUND ccache)
@@ -121,8 +107,8 @@ add_library(
 
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
-        ${Boost_LIBRARIES}
         actor-zeta
+        ${CONAN_LIBS}
 )
 
 target_include_directories(
@@ -130,3 +116,7 @@ target_include_directories(
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/header
 )
+
+if(ALLOW_EXAMPLES)
+    add_subdirectory(examples)
+endif()
