@@ -1,5 +1,6 @@
 #include <goblin-engineer.hpp>
 #include <goblin-engineer/components/network.hpp>
+#include <goblin-engineer/log.hpp>
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -89,7 +90,10 @@ public:
     : network_manager_service(env,"http",1)
     , acceptor_(loop(),{tcp::v4(),9999})
     , socket(loop())
+    , log_(env->logger())
     {
+        log_.info("http_t");
+        log_.info("start init http_t");
         add_handler(
                 "write",
                 [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
@@ -103,6 +107,8 @@ public:
                     actor_zeta::send(addresses("worker"),address(),"replay",std::move(data));
                 }
         );
+
+        log_.info("finish init http_t");
 
         do_accept();
 
@@ -119,7 +125,9 @@ public:
 
     }
 
-    ~http_t() override = default;
+    ~http_t() override {
+        log_.info("~http_t");
+    };
 
 private:
     void do_accept() {
@@ -146,6 +154,7 @@ private:
     connect_storage_t connect_storage_;
     tcp::acceptor acceptor_;
     tcp::socket socket;
+    goblin_engineer::log log_;
 
 };
 

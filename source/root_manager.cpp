@@ -6,11 +6,20 @@
 #include <goblin-engineer/dynamic.hpp>
 #include <goblin-engineer/abstract_service.hpp>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/rotating_file_sink.h>
+#include "spdlog/async.h"
 
 namespace goblin_engineer {
 
     void root_manager::shutdown() {
+
         io_context_->stop();
+        spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->info("root_manager::shutdown"); });
+        spdlog::shutdown();
+
     }
 
     void root_manager::startup() {
@@ -28,6 +37,7 @@ namespace goblin_engineer {
         , coordinator_(new actor_zeta::executor::executor_t<actor_zeta::executor::work_sharing>(1, 1000))
         , io_context_(std::make_unique<boost::asio::io_context>())
         , background_(std::make_unique<boost::thread_group>())
+        , log_()
         {
 
         auto sigint_set = std::make_shared<boost::asio::signal_set>(*io_context_, SIGINT, SIGTERM);
@@ -38,11 +48,22 @@ namespace goblin_engineer {
                 }
         );
 
+            spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
+
+            spdlog::init_thread_pool(8192, 1);
+            auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
+            auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/log.txt", true);
+            std::vector<spdlog::sink_ptr> sinks {stdout_sink, file_sink};
+            auto logger = std::make_shared<spdlog::async_logger>("root_log", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+            spdlog::register_logger(logger);
+            log_=log(logger);
+            log_.info("root_manager");
+
     }
 
     root_manager::~root_manager() {
         background_->join_all();
-        std::cerr << "~goblin-engineer" << std::endl;
+        log_.info("~root_manager");
     }
 
     std::size_t root_manager::start() {
@@ -94,5 +115,9 @@ namespace goblin_engineer {
         actor_zeta::link(this,address);
         storage_.emplace_back(std::move(supervisor));
         return address;
+    }
+
+    auto root_manager::logger() -> log {
+        return log_.clone();
     }
 }

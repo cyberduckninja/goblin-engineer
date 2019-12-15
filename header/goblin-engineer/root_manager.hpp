@@ -6,6 +6,7 @@
 #include <goblin-engineer/forward.hpp>
 #include <goblin-engineer/dynamic.hpp>
 #include <actor-zeta/core.hpp>
+#include "log.hpp"
 
 namespace goblin_engineer {
 
@@ -33,6 +34,8 @@ namespace goblin_engineer {
 
         auto background() const -> boost::thread_group &;
 
+        auto logger() -> log;
+
     private:
 
         auto broadcast(message) -> bool override;
@@ -54,6 +57,7 @@ namespace goblin_engineer {
         std::unique_ptr<boost::asio::io_context> io_context_;
         std::unique_ptr<boost::thread_group> background_;
         std::vector<actor_zeta::intrusive_ptr<actor_zeta::supervisor>> storage_;
+        log log_;
     };
 
 }
