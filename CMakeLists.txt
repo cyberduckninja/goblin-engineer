@@ -86,8 +86,9 @@ list(APPEND ${PROJECT_NAME}_header
 list(APPEND ${PROJECT_NAME}_source
         source/abstract_manager_service.cpp
         source/dynamic.cpp
-        source/root_manager.cpp
+        source/log.cpp
         source/network.cpp
+        source/root_manager.cpp
 )
 
 find_program(CCACHE_FOUND ccache)

@@ -13,7 +13,7 @@
 #include "spdlog/async.h"
 
 namespace goblin_engineer {
-
+constexpr const static char * log_name = "root_log";
     void root_manager::shutdown() {
 
         io_context_->stop();
@@ -51,12 +51,20 @@ namespace goblin_engineer {
             spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
 
             spdlog::init_thread_pool(8192, 1);
-            auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
+            auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
             auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/log.txt", true);
-            std::vector<spdlog::sink_ptr> sinks {stdout_sink, file_sink};
-            auto logger = std::make_shared<spdlog::async_logger>("root_log", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+            std::vector<spdlog::sink_ptr> sinks{stdout_sink, file_sink};
+            auto logger = std::make_shared<spdlog::async_logger>(
+                    log_name,
+                    sinks.begin(),sinks.end(),
+                    spdlog::thread_pool(),
+                    spdlog::async_overflow_policy::block
+            );
+
             spdlog::register_logger(logger);
-            log_=log(logger);
+
+            log_.context(logger);
+
             log_.info("root_manager");
 
     }

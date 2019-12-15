@@ -9,22 +9,15 @@
 
 namespace goblin_engineer {
 
-    using std::chrono::system_clock;
-    using std::chrono::duration_cast;
-    using std::chrono::milliseconds;
-    using std::chrono::seconds;
-
     class log final {
     public:
-        log() = default;
-
-        log(std::shared_ptr<spdlog::async_logger> logger):logger_(logger){}
+        log(std::shared_ptr<spdlog::async_logger> logger);
 
         ~log() = default;
 
-        auto clone() noexcept -> log {
-            return logger_;
-        }
+        auto clone() noexcept -> log;
+
+        auto context(std::shared_ptr<spdlog::async_logger> logger) noexcept -> void;
 
         template<typename MSGBuilder>
         void trace(MSGBuilder &&msg_builder) {
