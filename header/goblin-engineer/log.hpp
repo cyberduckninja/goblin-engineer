@@ -11,6 +11,9 @@ namespace goblin_engineer {
 
     class log final {
     public:
+
+        log() = default;
+
         log(std::shared_ptr<spdlog::async_logger> logger);
 
         ~log() = default;
