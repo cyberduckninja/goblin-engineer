@@ -64,23 +64,20 @@ include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #############################################################################################
 
 list(APPEND ${PROJECT_NAME}_header
+        header/goblin-engineer/components/network.hpp
+
         header/goblin-engineer/detail/constructors.hpp
         header/goblin-engineer/detail/converters.hpp
         header/goblin-engineer/detail/dynamic.hpp
-        header/goblin-engineer/dynamic.hpp
-
-        header/goblin-engineer/components/network.hpp
-
-        header/goblin-engineer/detail/converters.hpp
-        header/goblin-engineer/detail/constructors.hpp
+        header/goblin-engineer/detail/object.hpp
 
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
+        header/goblin-engineer/dynamic.hpp
         header/goblin-engineer/forward.hpp
         header/goblin-engineer/log.hpp
-        header/goblin-engineer/dynamic.hpp
         header/goblin-engineer/root_manager.hpp
-        header/goblin-engineer/forward.hpp
+        header/goblin-engineer.hpp
 )
 
 list(APPEND ${PROJECT_NAME}_source
@@ -97,8 +94,9 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-
-include(cmake/clang_tools.cmake)
+if(DEV_MODE)
+    include(cmake/clang_tools.cmake)
+endif()
 
 add_library(
         ${PROJECT_NAME}

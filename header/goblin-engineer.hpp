@@ -1,11 +1,13 @@
 #pragma once
 
-#include <goblin-engineer/forward.hpp>
-#include <goblin-engineer/dynamic.hpp>
+#include <actor-zeta/core.hpp>
+
 #include <goblin-engineer/abstract_manager_service.hpp>
 #include <goblin-engineer/abstract_service.hpp>
+#include <goblin-engineer/dynamic.hpp>
+#include <goblin-engineer/forward.hpp>
+#include <goblin-engineer/log.hpp>
 #include <goblin-engineer/root_manager.hpp>
-#include <actor-zeta/core.hpp>
 
 namespace goblin_engineer {
 
