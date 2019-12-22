@@ -58,6 +58,7 @@ namespace goblin_engineer {
         std::unique_ptr<boost::thread_group> background_;
         std::vector<actor_zeta::intrusive_ptr<actor_zeta::supervisor>> storage_;
         log log_;
+        std::shared_ptr<boost::asio::signal_set> signal_set_;
     };
 
 }

@@ -15,17 +15,14 @@
 namespace goblin_engineer {
 constexpr const static char * log_name = "root_log";
     void root_manager::shutdown() {
-
+        background_->join_all();
         io_context_->stop();
-        spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->info("root_manager::shutdown"); });
-        spdlog::shutdown();
-
+        log_.info("root_manager::shutdown");
     }
 
     void root_manager::startup() {
-
         start();
-
+        log_.info("root_manager::startup");
         shutdown();
     }
 
@@ -39,14 +36,6 @@ constexpr const static char * log_name = "root_log";
         , background_(std::make_unique<boost::thread_group>())
         , log_()
         {
-
-        auto sigint_set = std::make_shared<boost::asio::signal_set>(*io_context_, SIGINT, SIGTERM);
-        sigint_set->async_wait(
-                [sigint_set, this](const boost::system::error_code &/*err*/, int /*num*/) {
-                    shutdown();
-                    sigint_set->cancel();
-                }
-        );
 
             spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
 
@@ -65,16 +54,27 @@ constexpr const static char * log_name = "root_log";
 
             log_.context(logger);
 
+            signal_set_ = std::make_shared<boost::asio::signal_set>(*io_context_, SIGINT, SIGTERM);
+            signal_set_->async_wait(
+                    [this](const boost::system::error_code &/*err*/, int /*num*/) {
+                        log_.info("root_manager::root_manager signal_set");
+                        shutdown();
+                        signal_set_->cancel();
+                    }
+            );
+
             log_.info("root_manager");
 
     }
 
     root_manager::~root_manager() {
-        background_->join_all();
         log_.info("~root_manager");
+        ///spdlog::apply_all([&](std::shared_ptr<spdlog::logger> l) { l->info("root_manager::shutdown"); });
+        spdlog::shutdown();
     }
 
     std::size_t root_manager::start() {
+        log_.info("root_manager::start");
         executor().start();
         return io_context_->run();
     }
