@@ -177,10 +177,6 @@ public:
     ~worker_t() override = default;
 };
 
-// TODO Use only ///, not /**/
-// TODO Add doxygen to conan
-// TODO Delete gen doc
-
 /// \brief Main function
 /// \details This function create application with http manager and one service worker_t
 int main() {
