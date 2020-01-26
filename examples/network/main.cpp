@@ -1,6 +1,9 @@
+/// \file
+/// \brief Basic example
+/// \details The basic usage of the library with creating manager for http service is described here
+
 #include <goblin-engineer.hpp>
 #include <goblin-engineer/components/network.hpp>
-#include <goblin-engineer/log.hpp>
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -16,6 +19,8 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
+/// \brief Example of messages
+/// \details Describe type of data for our usage
 struct data_t final {
     explicit data_t(std::uintptr_t id):id_(id){}
     std::uintptr_t id_ ;
@@ -23,14 +28,15 @@ struct data_t final {
     http::response<http::dynamic_body> response_;
 };
 
-
+/// \brief Additional class for out goals
+/// \details Describe additional class for our http_t component
 class http_connection : public std::enable_shared_from_this<http_connection> {
 public:
     http_connection(tcp::socket socket,const actor_zeta::actor_address&address)
-        : socket_(std::move(socket))
-        , data_(reinterpret_cast<std::uintptr_t>(this))
-        , address_(address)
-        {}
+            : socket_(std::move(socket))
+            , data_(reinterpret_cast<std::uintptr_t>(this))
+            , address_(address)
+    {}
 
     void start() {
         read_request();
@@ -84,16 +90,15 @@ private:
 
 using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<http_connection>>;
 
+/// \brief Example of creating component
+/// \details Creating basic http component with possbibility to write and route some type of data
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
     http_t(goblin_engineer::root_manager *env,goblin_engineer::dynamic_config &)
-    : network_manager_service(env,"http",1)
-    , acceptor_(loop(),{tcp::v4(),9999})
-    , socket(loop())
-    , log_(env->logger())
+            : network_manager_service(env,"http",1)
+            , acceptor_(loop(),{tcp::v4(),9999})
+            , socket(loop())
     {
-        log_.info("http_t");
-        log_.info("start init http_t");
         add_handler(
                 "write",
                 [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
@@ -107,8 +112,6 @@ public:
                     actor_zeta::send(addresses("worker"),address(),"replay",std::move(data));
                 }
         );
-
-        log_.info("finish init http_t");
 
         do_accept();
 
@@ -125,9 +128,7 @@ public:
 
     }
 
-    ~http_t() override {
-        log_.info("~http_t");
-    };
+    ~http_t() override = default;
 
 private:
     void do_accept() {
@@ -154,37 +155,37 @@ private:
     connect_storage_t connect_storage_;
     tcp::acceptor acceptor_;
     tcp::socket socket;
-    goblin_engineer::log log_;
 
 };
 
 
+/// \brief Example of creating inherited service
+/// \details Creating service worker with handler for sending data
 class worker_t : public goblin_engineer::abstract_service {
 public:
-    explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
+    explicit worker_t(actor_zeta::intrusive_ptr<http_t>manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
-            "replay",
-            [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
-                data.response_.body()= data.request_.body();
-                data.response_.prepare_payload();
-                actor_zeta::send(addresses("http"),address(),"write",std::move(data));
-            }
+                "replay",
+                [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
+                    data.response_.body()= data.request_.body();
+                    data.response_.prepare_payload();
+                    actor_zeta::send(addresses("http"),address(),"write",std::move(data));
+                }
         );
     }
 
     ~worker_t() override = default;
 };
 
-
+/// \brief Main function
+/// \details This function create application with http manager and one service worker_t
 int main() {
-    goblin_engineer::dynamic_config cfg;
-    goblin_engineer::root_manager app(std::move(cfg));
 
-    auto *http1 = app.add_manager_service<http_t>();
-    auto log = goblin_engineer::make_service<worker_t>(http1);
-
+    goblin_engineer::dynamic_config cfg;                                ///< Create default config
+    goblin_engineer::root_manager app(std::move(cfg));                  ///< Create manager with our confing
+    auto http1 = goblin_engineer::make_manager_service<http_t>(app);  ///< Add to manager http service
+    auto worker = goblin_engineer::make_service<worker_t>(http1);     ///< Сreate our service for use
     app.initialize();
     app.startup();
-
     return 0;
 }

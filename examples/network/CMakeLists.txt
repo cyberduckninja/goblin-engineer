@@ -16,8 +16,7 @@ add_executable(
 )
 
 target_link_libraries (
-        ${PROJECT_NAME} PUBLIC
+        ${PROJECT_NAME} PRIVATE
         goblin-engineer
-        ${Boost_LIBRARIES}
         ${CONAN_LIBS}
 )

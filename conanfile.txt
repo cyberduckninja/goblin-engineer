@@ -2,6 +2,7 @@
 spdlog/1.4.2@bincrafters/stable
 boost/1.71.0@conan/stable
 actor-zeta/1.0.0a3@jinncrafters/stable
+doxygen_installer/1.8.15@bincrafters/stable
 
 [options]
 #boost:error_code_header_only=True

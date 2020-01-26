@@ -36,3 +36,8 @@ conanbuildinfo.cmake
 conanbuildinfo.txt
 conaninfo.txt
 graph_info.json
+
+# IDE
+.idea*
+.vscode*
+cmake-build-*
