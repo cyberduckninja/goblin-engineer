@@ -3,10 +3,11 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
+#include <actor-zeta/core.hpp>
+
 #include <goblin-engineer/forward.hpp>
 #include <goblin-engineer/dynamic.hpp>
-#include <actor-zeta/core.hpp>
-#include "log.hpp"
+#include <goblin-engineer/log.hpp>
 
 namespace goblin_engineer {
 
