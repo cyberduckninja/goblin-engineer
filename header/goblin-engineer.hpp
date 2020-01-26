@@ -16,8 +16,16 @@ namespace goblin_engineer {
             typename Supervisor,
             typename... Args
     >
-    inline auto make_service(actor_zeta::intrusive_ptr<Supervisor> supervisor, Args&&... args){
-        return make_actor<Actor>(supervisor,std::forward<Args>(args)...);
+    auto make_service(actor_zeta::intrusive_ptr<Supervisor>& supervisor, Args&&... args){
+        return make_actor<Actor>(supervisor.get(),std::forward<Args>(args)...);
+    }
+
+    template<
+            typename Actor,
+            typename... Args
+    >
+    auto make_manager_service(root_manager&app,Args&&... args){
+        return app.add_manager_service<Actor>(std::forward<Args>(args)...);
     }
 
 }

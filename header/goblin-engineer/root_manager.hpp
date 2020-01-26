@@ -43,9 +43,9 @@ namespace goblin_engineer {
 
         auto broadcast(message) -> bool override;
 
-         auto join(base_actor * ) -> actor_zeta::actor::actor_address override;
+        auto join(base_actor * ) -> actor_zeta::actor::actor_address override;
 
-         auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address;
+        auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address;
 
         void enqueue(message, actor_zeta::executor::execution_device *) override;
 
