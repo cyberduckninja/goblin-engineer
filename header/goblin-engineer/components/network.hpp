@@ -7,7 +7,7 @@
 
 namespace goblin_engineer { namespace components {
 
-    /// \brief Special manager for network tasks 
+    /// \brief Special manager for network tasks
     /// \details This class inheritance basic behavior from abstract manager and creating specific functionality for networks tasks
     class network_manager_service : public abstract_manager_service {
     public:

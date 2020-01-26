@@ -8,12 +8,13 @@
 Add the corresponding remote to your conan:
 
 ```bash
-    conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
+conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
 ```
 
 ### Basic setup
 ```bash
-    $ conan install goblin-engineer/1.0.0a2@jinncrafters/stable
+conan remote add bincrafters  https://api.bintray.com/conan/bincrafters/public-conan
+conan install goblin-engineer/1.0.0a2@jinncrafters/stable
 ```
 ### Project setup
 
