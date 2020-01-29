@@ -3,9 +3,9 @@
 #include <goblin-engineer.hpp>
 #include <goblin-engineer/components/network.hpp>
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace http_server {
 
-class server final: public goblin_engineer::components::network_manager_service {
+    class server final : public network_manager_service {
     public:
         server(
                 goblin_engineer::root_manager *,
@@ -16,7 +16,8 @@ class server final: public goblin_engineer::components::network_manager_service 
 
     private:
         class impl;
+
         std::shared_ptr<impl> pimpl;
     };
 
-}}
+}}}

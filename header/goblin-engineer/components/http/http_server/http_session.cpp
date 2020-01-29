@@ -1,12 +1,17 @@
-#include <rocketjoe/services/http_server/http_session.hpp>
+#include <goblin-engineer/components/http/http_server/http_session.hpp>
 
-#include <rocketjoe/network/network.hpp>
-#include <rocketjoe/services/http_server/websocket_session.hpp>
+#include <goblin-engineer/components/http/detail/network.hpp>
+#include <goblin-engineer/components/http/http_server/websocket_session.hpp>
 
+#include <iostream>
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace http_server {
 
-    http_session::http_session(network::tcp::socket &&socket, std::size_t id, network::helper_write_f_t context_) :
+    inline void fail(boost::beast::error_code ec, char const* what){
+        std::cerr << what << ": " << ec.message() << "\n";
+    }
+
+    http_session::http_session(detail::tcp::socket &&socket, std::size_t id, helper_write_f_t context_) :
             stream_(std::move(socket)),
             queue_(*this),
             handle_processing(context_),
@@ -17,22 +22,21 @@ namespace goblin_engineer { namespace components { namespace http {
         do_read();
     }
 
-    void http_session::on_read(network::beast::error_code ec, std::size_t bytes_transferred) {
+    void http_session::on_read(boost::beast::error_code ec, std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
 
         // This means they closed the connection
-        if (ec == network::http::error::end_of_stream)
+        if (ec == detail::http::error::end_of_stream)
             return do_close();
 
         if (ec)
-            return network::fail(ec, "read");
+            return fail(ec, "read");
 
         // See if it is a WebSocket Upgrade
-        if (network::websocket::is_upgrade(parser_->get())) {
+        if (detail::websocket::is_upgrade(parser_->get())) {
             // Create a websocket session, transferring ownership
             // of both the socket and the HTTP request.
-            std::make_shared<session::websocket_session>(stream_.release_socket(), handle_processing)->do_accept(
-                    parser_->release());
+            std::make_shared<websocket_session>(stream_.release_socket(), handle_processing)->do_accept(parser_->release());
             return;
         }
 
@@ -44,11 +48,11 @@ namespace goblin_engineer { namespace components { namespace http {
             do_read();
     }
 
-    void http_session::on_write(bool close, network::beast::error_code ec, std::size_t bytes_transferred) {
+    void http_session::on_write(bool close, boost::beast::error_code ec, std::size_t bytes_transferred) {
         boost::ignore_unused(bytes_transferred);
 
         if (ec)
-            return network::fail(ec, "write");
+            return fail(ec, "write");
 
         if (close) {
             // This means we should close the connection, usually because
@@ -63,9 +67,8 @@ namespace goblin_engineer { namespace components { namespace http {
         }
     }
 
-    void http_session::do_close() {
-        network::beast::error_code ec;
-        stream_.socket().shutdown(network::tcp::socket::shutdown_send, ec);
+    void http_session::do_close() {boost::beast::error_code ec;
+        stream_.socket().shutdown(detail::tcp::socket::shutdown_send, ec);
     }
 
     void http_session::do_read() {
@@ -80,18 +83,18 @@ namespace goblin_engineer { namespace components { namespace http {
         stream_.expires_after(std::chrono::seconds(30));
 
         // Read a request using the parser-oriented interface
-        network::http::async_read(
+        detail::http::async_read(
                 stream_,
                 buffer_,
                 *parser_,
-                network::beast::bind_front_handler(
+                boost::beast::bind_front_handler(
                         &http_session::on_read,
                         shared_from_this()
                 )
         );
     }
 
-    void http_session::write(network::response_type &&body) {
+    void http_session::write(detail::response_type &&body) {
         queue_(std::move(body));
     }
 

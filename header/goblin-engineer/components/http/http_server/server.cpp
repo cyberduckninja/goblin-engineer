@@ -7,32 +7,37 @@
 #include <actor-zeta/core.hpp>
 #include <iostream>
 
-#include <rocketjoe/network/network.hpp>
-#include <rocketjoe/services/http_server/server.hpp>
-#include <rocketjoe/services/http_server/http_session.hpp>
+#include <goblin-engineer/components/http/detail/network.hpp>
+#include <goblin-engineer/components/http/http_server/server.hpp>
+#include <goblin-engineer/components/http/http_server/http_session.hpp>
 
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace http_server {
 
-        using clock = std::chrono::steady_clock;
+    inline void fail(boost::beast::error_code ec, char const* what){
+        std::cerr << what << ": " << ec.message() << "\n";
+    }
 
-        class server::impl final : public std::enable_shared_from_this<impl>{
+
+    using clock = std::chrono::steady_clock;
+
+        class server::impl final : public std::enable_shared_from_this<impl> {
         private:
             struct tcp_listener final  {
                 template <typename F>
                 tcp_listener(
-                        network::net::io_context& ioc,
+                        detail::net::io_context& ioc,
                         unsigned short port,
                         F&&f
                 )
-                    : acceptor_(ioc,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port),net::socket_base::reuse_address(true))
+                    : acceptor_(ioc,boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port),detail::net::socket_base::reuse_address(true))
                     , helper_write(std::forward<F>(f))
                 {
-                    acceptor_.listen(net::socket_base::max_listen_connections);
+                    acceptor_.listen(detail::net::socket_base::max_listen_connections);
                 }
-                tcp::acceptor acceptor_;
-                network::helper_write_f_t helper_write;
-                std::unordered_map<std::size_t, std::shared_ptr<session::http_session>> storage_session;
+                detail::tcp::acceptor acceptor_;
+                helper_write_f_t helper_write;
+                std::unordered_map<std::size_t, std::shared_ptr<http_session>> storage_session;
             };
 
             using listener_ptr = std::unique_ptr<tcp_listener>;
@@ -59,20 +64,21 @@ namespace goblin_engineer { namespace components { namespace http {
             void do_accept() {
                 // The new connection gets its own strand
                 listener->acceptor_.async_accept(
-                        net::make_strand(listener->acceptor_.get_executor()),
-                        beast::bind_front_handler(
+                        detail::net::make_strand(listener->acceptor_.get_executor()),
+                        boost::beast::bind_front_handler(
                                 &impl::on_accept,
                                 shared_from_this()
                         )
                 );
             }
 
-            void on_accept(boost::system::error_code ec,tcp::socket socket) {
+            void on_accept(boost::system::error_code ec,detail::tcp::socket socket) {
+
                 if (ec) {
                     fail(ec, "accept");
                 } else {
                     auto id_ = static_cast<std::size_t>(std::chrono::duration_cast<std::chrono::microseconds>(clock::now().time_since_epoch()).count());
-                    listener->storage_session.emplace(id_, std::make_shared<session::http_session>(std::move(socket),id_,listener->helper_write));
+                    listener->storage_session.emplace(id_, std::make_shared<http_session>(std::move(socket),id_,listener->helper_write));
                     listener->storage_session.at(id_)->run();
                 }
 
@@ -80,24 +86,27 @@ namespace goblin_engineer { namespace components { namespace http {
                 do_accept();
             }
 
-            void write(response_context_type &body) {
+            void write(detail::response_context_type &body) {
+
                 std::cerr << "id = " << body.id() << std::endl;
                 auto it = listener->storage_session.find(body.id());
                 if (it != listener->storage_session.end()) {
                     it->second->write(std::move(body.response()));
                 }
+
             }
 
         public:
             template<typename Fun>
             auto add_listener(
-                    network::net::io_context& ioc,
+                    detail::net::io_context& ioc,
                     unsigned short port,
                     Fun&&f
             ){
                 std::cerr << "Port = " << port << std::endl;
                 listener = std::make_unique<tcp_listener>(ioc,port,std::forward<Fun>(f));
             }
+
             auto shutdown() {
                 //if (!listener->acceptor_.is_open()) {
                 //    return;
@@ -105,7 +114,9 @@ namespace goblin_engineer { namespace components { namespace http {
                  ///listener->acceptor_.
                 //}
             }
-            std::function<void(request_type &&, std::size_t)> helper_write;
+
+            std::function<void(detail::request_type &&, std::size_t)> helper_write;
+
         private:
             listener_ptr listener;
         };
@@ -120,9 +131,9 @@ namespace goblin_engineer { namespace components { namespace http {
 
             auto http_address = self();
 
-            pimpl->helper_write = [=](request_type &&req, std::size_t session_id) {
+            pimpl->helper_write = [=](detail::request_type &&req, std::size_t session_id) {
 
-                query_context context(std::move(req), session_id, http_address);
+                detail::query_context context(std::move(req), session_id, http_address);
 
                 actor_zeta::send(
                         http_address,
@@ -137,22 +148,22 @@ namespace goblin_engineer { namespace components { namespace http {
 
             add_handler(
                     "close",
-                    [](actor_zeta::actor::context &/*ctx*/, response_context_type &/*body*/) -> void {
+                    [](actor_zeta::context &/*ctx*/, detail::response_context_type &/*body*/) -> void {
 
                     }
             );
 
             add_handler(
                     "write",
-                    [this](actor_zeta::actor::context &/*ctx*/, response_context_type &body) -> void {
+                    [this](actor_zeta::context &/*ctx*/, detail::response_context_type &body) -> void {
                         pimpl->write(body);
                     }
             );
 
             add_handler(
                     "dispatcher",
-                    [this](actor_zeta::actor::context &ctx, response_context_type &/*body*/) -> void {
-                        actor_zeta::send(addresses("router"),std::move(ctx.message()));
+                    [this](actor_zeta::context &ctx, detail::response_context_type &/*body*/) -> void {
+                        actor_zeta::send(addresses("dispather"),std::move(ctx.message()));
                     }
             );
 
@@ -163,4 +174,4 @@ namespace goblin_engineer { namespace components { namespace http {
             pimpl->add_listener(loop(),port,pimpl->helper_write);
             pimpl->run();
         }
-}}
+}}}

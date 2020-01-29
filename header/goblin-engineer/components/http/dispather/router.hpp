@@ -7,9 +7,13 @@
 
 #include <actor-zeta/actor/actor_address.hpp>
 #include <actor-zeta/messaging/message.hpp>
-#include <goblin-engineer/components/http/network.hpp>
+#include <goblin-engineer/components/http/detail/network.hpp>
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace dispatcher {
+
+    using detail::http_method;
+    using detail::query_context;
+    using detail::options;
 
     struct http_method_hasher final {
         std::size_t operator()(const http_method &k) const {
@@ -113,7 +117,7 @@ namespace goblin_engineer { namespace components { namespace http {
         }
         /// TODO: not implement update
 /*
-        auto update(router&r){
+        auto update(dispather&r){
            for(auto&&i:r ){
 
            }
@@ -302,4 +306,4 @@ namespace goblin_engineer { namespace components { namespace http {
         router router_;
     };
 
-}}
+}}}

@@ -65,6 +65,20 @@ include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 
 list(APPEND ${PROJECT_NAME}_header
 
+        header/goblin-engineer/components/http/http_server/http_session.cpp
+        header/goblin-engineer/components/http/http_server/http_session.hpp
+        header/goblin-engineer/components/http/http_server/server.cpp
+        header/goblin-engineer/components/http/http_server/server.hpp
+        header/goblin-engineer/components/http/http_server/websocket_session.cpp
+        header/goblin-engineer/components/http/http_server/websocket_session.hpp
+
+        header/goblin-engineer/components/http/dispather/http_dispather.hpp
+        header/goblin-engineer/components/http/dispather/router.hpp
+        header/goblin-engineer/components/http/dispather/http_dispather.cpp
+
+        header/goblin-engineer/components/http/detail/network.hpp
+        header/goblin-engineer/components/http.hpp
+
         header/goblin-engineer/components/network.hpp
 
         header/goblin-engineer/detail/converters.hpp
@@ -93,7 +107,6 @@ add_library(
 
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
-        actor-zeta
         ${CONAN_LIBS}
 )
 

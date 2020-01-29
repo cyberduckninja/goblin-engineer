@@ -2,10 +2,12 @@
 
 #include <memory>
 
-#include <rocketjoe/network/network.hpp>
+#include <goblin-engineer/components/http/detail/network.hpp>
+#include <boost/beast/core/error.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include "forward.hpp"
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace http_server {
 
         class http_session final : public std::enable_shared_from_this<http_session> {
             // This queue is used for HTTP pipelining.
@@ -39,25 +41,25 @@ namespace goblin_engineer { namespace components { namespace http {
 
                 // Called by the HTTP handler to send a response.
                 template<bool isRequest, class Body, class Fields>
-                void operator()(network::http::message<isRequest, Body, Fields> &&msg) {
+                void operator()(detail::http::message<isRequest, Body, Fields> &&msg) {
                     // This holds a work item
                     struct work_impl final : work {
                         http_session &self_;
-                        network::http::message<isRequest, Body, Fields> msg_;
+                        detail::http::message<isRequest, Body, Fields> msg_;
 
                         work_impl(
                                 http_session &self,
-                                network::http::message<isRequest, Body, Fields> &&msg)
+                                detail::http::message<isRequest, Body, Fields> &&msg)
                                 : self_(self)
                                 , msg_(std::move(msg))
                         {
                         }
 
                         void operator()() {
-                            network::http::async_write(
+                            detail::http::async_write(
                                     self_.stream_,
                                     msg_,
-                                    network::beast::bind_front_handler(
+                                    boost::beast::bind_front_handler(
                                             &http_session::on_write,
                                             self_.shared_from_this(),
                                             msg_.need_eof()
@@ -76,14 +78,14 @@ namespace goblin_engineer { namespace components { namespace http {
                 }
             };
 
-            network::beast::tcp_stream stream_;
-            network::beast::flat_buffer buffer_;
+            boost::beast::tcp_stream stream_;
+            boost::beast::flat_buffer buffer_;
             queue queue_;
-            boost::optional<network::http::request_parser<network::http::string_body>> parser_;
-            network::helper_write_f_t handle_processing;
+            boost::optional<detail::http::request_parser<detail::http::string_body>> parser_;
+            helper_write_f_t handle_processing;
             const std::size_t id;
         public:
-            http_session(network::tcp::socket&&, std::size_t, network::helper_write_f_t);
+            http_session(detail::tcp::socket&&, std::size_t, helper_write_f_t);
 
             ~http_session() = default;
 
@@ -91,13 +93,13 @@ namespace goblin_engineer { namespace components { namespace http {
 
             void do_read();
 
-            void on_read(network::beast::error_code, std::size_t );
+            void on_read(boost::beast::error_code, std::size_t );
 
-            void on_write(bool close, network::beast::error_code ec, std::size_t bytes_transferred);
+            void on_write(bool close, boost::beast::error_code ec, std::size_t bytes_transferred);
 
             void do_close();
 
-            void write(network::response_type &&);
+            void write(detail::response_type &&);
 
         };
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <functional>
-#include <rocketjoe/network/network.hpp>
+#include <goblin-engineer/components/http/detail/network.hpp>
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace http_server {
 
-    using helper_write_f_t = std::function<void(network::request_type && , std::size_t)>;
+    using helper_write_f_t = std::function<void(detail::request_type && , std::size_t)>;
 
 }}}

@@ -19,7 +19,7 @@
 
 #include <actor-zeta/core.hpp>
 
-namespace goblin_engineer { namespace components { namespace http {
+namespace goblin_engineer { namespace components { namespace detail {
 
         using boost::string_view;
 
