@@ -8,7 +8,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
 
         class http_dispatcher final : public abstract_service {
         public:
-            http_dispatcher(http_server::server *, dynamic_config &);
+            http_dispatcher(http_server::server *, dynamic_config &, dispatcher::wrapper_router&);
 
             ~http_dispatcher() override = default;
 

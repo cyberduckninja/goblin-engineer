@@ -2,6 +2,7 @@
 
 #include <goblin-engineer.hpp>
 #include <goblin-engineer/components/network.hpp>
+#include <goblin-engineer/components/http/http_server/multiplexer.hpp>
 
 namespace goblin_engineer { namespace components { namespace http_server {
 
@@ -9,7 +10,8 @@ namespace goblin_engineer { namespace components { namespace http_server {
     public:
         server(
                 goblin_engineer::root_manager *,
-                goblin_engineer::dynamic_config &
+                goblin_engineer::dynamic_config &,
+                multiplexer&
         );
 
         ~server() override = default;

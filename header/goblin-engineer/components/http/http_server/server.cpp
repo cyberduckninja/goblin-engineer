@@ -123,7 +123,8 @@ namespace goblin_engineer { namespace components { namespace http_server {
 
         server::server(
                 goblin_engineer::root_manager *env,
-                goblin_engineer::dynamic_config &configuration
+                goblin_engineer::dynamic_config &configuration,
+                multiplexer&multiplexer_
         )
             : network_manager_service(env, "http",1)
             , pimpl(std::make_shared<impl>(configuration ))
@@ -167,11 +168,7 @@ namespace goblin_engineer { namespace components { namespace http_server {
                     }
             );
 
-            auto string_port = configuration.as_object()["http-port"].as_string();
-            auto tmp_port = std::stoul(string_port);
-            auto port = static_cast<unsigned short>(tmp_port);
-
-            pimpl->add_listener(loop(),port,pimpl->helper_write);
+            pimpl->add_listener(loop(),multiplexer_.port(),pimpl->helper_write);
             pimpl->run();
         }
 }}}
