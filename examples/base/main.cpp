@@ -163,7 +163,7 @@ private:
 /// \details Creating service worker with handler for sending data
 class worker_t : public goblin_engineer::abstract_service {
 public:
-    explicit worker_t(http_t *manager) : goblin_engineer::abstract_service(manager, "worker") {
+    explicit worker_t(actor_zeta::intrusive_ptr<http_t>manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
             "replay",
             [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
@@ -180,12 +180,13 @@ public:
 /// \brief Main function
 /// \details This function create application with http manager and one service worker_t
 int main() {
-    goblin_engineer::dynamic_config cfg;                           ///< Create default config
-    goblin_engineer::root_manager app(std::move(cfg));             ///< Create manager with our confing
 
-    auto *http1 = app.add_manager_service<http_t>();               ///< Add to manager http service
-    auto worker = goblin_engineer::make_service<worker_t>(http1);  ///< Сreate our service for use
-    app.initialize();                                              
+    goblin_engineer::dynamic_config cfg;                                ///< Create default config
+    goblin_engineer::root_manager app(std::move(cfg));                  ///< Create manager with our confing
+    auto http1 = goblin_engineer::make_manager_service<http_t>(app);  ///< Add to manager http service
+    auto worker = goblin_engineer::make_service<worker_t>(http1);     ///< Сreate our service for use
+    app.initialize();
     app.startup();
     return 0;
+
 }

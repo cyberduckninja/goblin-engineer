@@ -1,4 +1,4 @@
-GET http://0.0.0.0:9999
+GET http://0.0.0.0:9999/my/super/url
 Content-Type: application/json
 
 {"a":1,"b":2}

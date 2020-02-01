@@ -50,7 +50,7 @@ endif ()
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-    conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
+    #conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
 
     conan_cmake_run(
             CONANFILE conanfile.txt
@@ -106,7 +106,7 @@ add_library(
 )
 
 target_link_libraries (
-        ${PROJECT_NAME} PUBLIC
+        ${PROJECT_NAME} PRIVATE
         ${CONAN_LIBS}
 )
 
@@ -114,6 +114,8 @@ target_include_directories(
         ${PROJECT_NAME}
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/header
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/header/goblin-engineer
 )
 
 if(ALLOW_EXAMPLES)

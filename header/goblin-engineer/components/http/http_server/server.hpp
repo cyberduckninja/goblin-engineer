@@ -11,7 +11,7 @@ namespace goblin_engineer { namespace components { namespace http_server {
         server(
                 goblin_engineer::root_manager *,
                 goblin_engineer::dynamic_config &,
-                multiplexer&
+                unsigned short port
         );
 
         ~server() override = default;

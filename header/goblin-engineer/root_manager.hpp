@@ -17,9 +17,15 @@ namespace goblin_engineer {
         ~root_manager() override;
 
         template <class Manager,typename ...Args>
-        auto add_manager_service(Args&&...args)-> Manager* {
-            auto * tmp  = new Manager(environment(), configuration(), std::forward<Args>(args)...);
-            join(actor_zeta::intrusive_ptr<Manager>(tmp));
+        auto add_manager_service(Args&&...args) {
+            actor_zeta::intrusive_ptr<Manager> tmp (
+                    new Manager(
+                            environment(),
+                            configuration(),
+                            std::forward<Args>(args)...
+                    )
+            );
+            join(tmp);
             return tmp;
         }
 
@@ -37,9 +43,9 @@ namespace goblin_engineer {
 
         auto broadcast(message) -> bool override;
 
-         auto join(base_actor * ) -> actor_zeta::actor::actor_address override;
+        auto join(base_actor * ) -> actor_zeta::actor::actor_address override;
 
-         auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address;
+        auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor::actor_address;
 
         void enqueue(message, actor_zeta::executor::execution_device *) override;
 
