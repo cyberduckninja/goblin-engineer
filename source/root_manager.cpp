@@ -37,8 +37,6 @@ constexpr const static char * log_name = "root_log";
         , log_()
         {
 
-            spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
-
             spdlog::init_thread_pool(8192, 1);
             auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
             auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/log.txt", true);
@@ -51,6 +49,8 @@ constexpr const static char * log_name = "root_log";
             );
 
             spdlog::register_logger(logger);
+
+            ///spdlog::set_pattern("[%H:%M:%S %z] [%^%L%$] [thread %t] %v");
 
             log_.context(logger);
 
