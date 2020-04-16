@@ -16,9 +16,10 @@ option(ALLOW_EXAMPLES "Enable building examples" OFF)
 
 option(DEV_MODE "developer mode" OFF)
 
+option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
+
 if (DEV_MODE)
     add_compile_options(
-            -v
             #-Werror
 
             -Wall
@@ -51,6 +52,11 @@ endif ()
     include(${CMAKE_BINARY_DIR}/conan.cmake)
 
     #conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
+    conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
+
+    if (CONAN_EXPERIMENTAL_INCLUDE)
+        set(CONAN_SYSTEM_INCLUDES "On")
+    endif ()
 
     conan_cmake_run(
             CONANFILE conanfile.txt
@@ -87,8 +93,8 @@ list(APPEND ${PROJECT_NAME}_header
 
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/dynamic.hpp
-        header/goblin-engineer/root_manager.hpp
+        header/goblin-engineer/detail/dynamic.hpp
+        header/goblin-engineer/components/root_manager.hpp
         header/goblin-engineer/forward.hpp
 )
 

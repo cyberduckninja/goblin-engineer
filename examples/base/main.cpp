@@ -94,7 +94,7 @@ using connect_storage_t =  std::unordered_map<std::uintptr_t,std::shared_ptr<htt
 /// \details Creating basic http component with possbibility to write and route some type of data
 class http_t final : public goblin_engineer::components::network_manager_service {
 public:
-    http_t(goblin_engineer::root_manager *env,goblin_engineer::dynamic_config &)
+    http_t(goblin_engineer::components::root_manager *env,goblin_engineer::dynamic_config &)
     : network_manager_service(env,"http",1)
     , acceptor_(loop(),{tcp::v4(),9999})
     , socket(loop())
@@ -163,7 +163,7 @@ private:
 /// \details Creating service worker with handler for sending data
 class worker_t : public goblin_engineer::abstract_service {
 public:
-    explicit worker_t(actor_zeta::intrusive_ptr<http_t>manager) : goblin_engineer::abstract_service(manager, "worker") {
+    explicit worker_t(actor_zeta::intrusive_ptr<http_t> manager) : goblin_engineer::abstract_service(manager, "worker") {
         add_handler(
             "replay",
             [&](actor_zeta::context & /*ctx*/, data_t & data) -> void {
@@ -182,10 +182,9 @@ public:
 int main() {
 
     goblin_engineer::dynamic_config cfg;                                ///< Create default config
-    goblin_engineer::root_manager app(std::move(cfg));                  ///< Create manager with our confing
-    auto http1 = goblin_engineer::make_manager_service<http_t>(app);  ///< Add to manager http service
-    auto worker = goblin_engineer::make_service<worker_t>(http1);     ///< Сreate our service for use
-    app.initialize();
+    goblin_engineer::components::root_manager app(1,1000);                  ///< Create manager with our confing
+    auto http = goblin_engineer::components::make_manager_service<http_t>(app,cfg);  ///< Add to manager http service
+    goblin_engineer::components::make_service<worker_t>(http);     ///< Сreate our service for use
     app.startup();
     return 0;
 

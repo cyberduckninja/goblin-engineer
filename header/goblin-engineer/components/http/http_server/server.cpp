@@ -122,8 +122,8 @@ namespace goblin_engineer { namespace components { namespace http_server {
         };
 
         server::server(
-                goblin_engineer::root_manager *env,
-                goblin_engineer::dynamic_config &configuration,
+                root_manager *env,
+                dynamic_config &configuration,
                 unsigned short port
         )
             : network_manager_service(env, "http",1)
@@ -138,7 +138,7 @@ namespace goblin_engineer { namespace components { namespace http_server {
 
                 actor_zeta::send(
                         http_address,
-                        actor_zeta::messaging::make_message(
+                        actor_zeta::make_message(
                                 http_address,
                                 "dispatcher",
                                 std::move(context)
@@ -164,7 +164,7 @@ namespace goblin_engineer { namespace components { namespace http_server {
             add_handler(
                     "dispatcher",
                     [this](actor_zeta::context &ctx, detail::response_context_type &/*body*/) -> void {
-                        actor_zeta::send(addresses("http_dispatcher"),std::move(ctx.message()));
+                        actor_zeta::send(addresses("http_dispatcher"),std::move(ctx.current_message()));
                     }
             );
 

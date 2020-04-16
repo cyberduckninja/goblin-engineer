@@ -9,7 +9,7 @@ using namespace goblin_engineer::components;
 int main() {
     dynamic_config config; ///< Create default config
 
-    root_manager app(config); ///< Create manager with our confing
+    root_manager app(1,1000); ///< Create manager with our confing
 
     http::multiplexer multiplexer_;
 
@@ -25,9 +25,8 @@ int main() {
     );
 
 
-    auto http1 =  make_manager_service<http::server>(app,9999);
+    auto http1 =  make_manager_service<http::server>(app,config,9999);
     auto worker = make_service<http::http_dispatcher>(http1,config,router_);
-    app.initialize(); /// hook for so/dll
     app.startup();
     return 0;
 }

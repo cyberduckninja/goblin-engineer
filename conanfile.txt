@@ -1,6 +1,6 @@
 [requires]
-boost/1.71.0@conan/stable
-actor-zeta/1.0.0a3@jinncrafters/stable
+boost/1.72.0@_/_
+actor-zeta/1.0.0a4@jinncrafters/stable
 doxygen_installer/1.8.15@bincrafters/stable
 
 [options]

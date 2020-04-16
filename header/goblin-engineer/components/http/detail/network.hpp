@@ -112,7 +112,7 @@ namespace goblin_engineer { namespace components { namespace detail {
             query_context(
                     request_type request_,
                     size_t i,
-                    actor_zeta::actor::actor_address address
+                    actor_zeta::actor_address address
             ) :
                     request_(std::move(request_)),
                     id_(i),
@@ -142,7 +142,7 @@ namespace goblin_engineer { namespace components { namespace detail {
                 response_context_type context(std::move(response_), id_);
                 actor_zeta::send(
                         address,
-                        actor_zeta::messaging::make_message(
+                        actor_zeta::make_message(
                                 address,
                                 "write",
                                 std::move(context)
@@ -154,7 +154,7 @@ namespace goblin_engineer { namespace components { namespace detail {
         private:
             request_type request_;
             std::size_t id_;
-            actor_zeta::actor::actor_address address;
+            actor_zeta::actor_address address;
             response_type response_;
         };
 
