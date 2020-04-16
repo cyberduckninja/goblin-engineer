@@ -46,12 +46,11 @@ endif ()
 
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
     endif()
 
     include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-    #conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
     conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
 
     if (CONAN_EXPERIMENTAL_INCLUDE)
@@ -69,23 +68,44 @@ include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #CONAN
 #############################################################################################
 
-list(APPEND ${PROJECT_NAME}_header
+set( ${PROJECT_NAME}_header_base
+        header/goblin-engineer/components/root_manager.hpp
+)
 
-        header/goblin-engineer/components/http/http_server/http_session.cpp
+set( ${PROJECT_NAME}_source_base
+        source/root_manager.cpp
+)
+
+set( ${PROJECT_NAME}_header_asio
+        header/goblin-engineer/components/network.hpp
+)
+
+set( ${PROJECT_NAME}_source_asio
+        source/network.cpp
+)
+
+
+set( ${PROJECT_NAME}_header_http
         header/goblin-engineer/components/http/http_server/http_session.hpp
-        header/goblin-engineer/components/http/http_server/server.cpp
         header/goblin-engineer/components/http/http_server/server.hpp
-        header/goblin-engineer/components/http/http_server/websocket_session.cpp
         header/goblin-engineer/components/http/http_server/websocket_session.hpp
 
         header/goblin-engineer/components/http/dispather/http_dispather.hpp
         header/goblin-engineer/components/http/dispather/router.hpp
-        header/goblin-engineer/components/http/dispather/http_dispather.cpp
 
         header/goblin-engineer/components/http/detail/network.hpp
         header/goblin-engineer/components/http.hpp
+)
 
-        header/goblin-engineer/components/network.hpp
+set( ${PROJECT_NAME}_source_http
+        header/goblin-engineer/components/http/http_server/http_session.cpp
+        header/goblin-engineer/components/http/http_server/server.cpp
+        header/goblin-engineer/components/http/http_server/websocket_session.cpp
+
+        header/goblin-engineer/components/http/dispather/http_dispather.cpp
+)
+
+set( ${PROJECT_NAME}_header
 
         header/goblin-engineer/detail/converters.hpp
         header/goblin-engineer/detail/constructors.hpp
@@ -94,15 +114,28 @@ list(APPEND ${PROJECT_NAME}_header
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
         header/goblin-engineer/detail/dynamic.hpp
-        header/goblin-engineer/components/root_manager.hpp
         header/goblin-engineer/forward.hpp
 )
 
-list(APPEND ${PROJECT_NAME}_source
+set( ${PROJECT_NAME}_source
+
         source/abstract_manager_service.cpp
         source/dynamic.cpp
         source/root_manager.cpp
-        source/network.cpp
+)
+
+
+list(APPEND ${PROJECT_NAME}_header
+
+        ${${PROJECT_NAME}_header_base}
+        ${${PROJECT_NAME}_header_asio}
+        ${${PROJECT_NAME}_header_http}
+)
+
+list(APPEND ${PROJECT_NAME}_source
+        ${${PROJECT_NAME}_source_base}
+        ${${PROJECT_NAME}_source_asio}
+        ${${PROJECT_NAME}_source_http}
 )
 
 add_library(
