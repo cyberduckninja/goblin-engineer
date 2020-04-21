@@ -26,10 +26,14 @@ namespace goblin_engineer { namespace components {
             return io_context_;
         }
 
-        ///TODO: problem in non thread safe
         void network_manager_service::enqueue(message msg, actor_zeta::executor::execution_device *) {
-          set_current_message(std::move(msg));
-          dispatch().execute(*this);
+            boost::asio::post(
+                    io_context_,
+                    [this, msg = std::move(msg)]() mutable {
+                        set_current_message(std::move(msg));
+                        dispatch().execute(*this);
+                    }
+            );
         }
 
 }}
