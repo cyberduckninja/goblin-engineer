@@ -28,7 +28,7 @@ private:
   detail::net::io_context &ioc_;
   detail::tcp::acceptor acceptor_;
   helper_write_f_t helper_write_;
-  std::unordered_map<std::ptrdiff_t, std::shared_ptr<http_session>> session_storage_;
+  std::unordered_map<std::uintptr_t, std::shared_ptr<http_session>> session_storage_;
 };
 
 }}}

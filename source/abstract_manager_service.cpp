@@ -1,4 +1,5 @@
 #include <goblin-engineer/abstract_manager_service.hpp>
+#include <iostream>
 
 namespace goblin_engineer {
 
@@ -14,8 +15,7 @@ auto async_policy::join(actor_zeta::actor t) -> actor_zeta::actor_address {
   return current_address;
 }
 
-auto async_policy::executor() noexcept
-    -> actor_zeta::executor::abstract_executor & {
+auto async_policy::executor() noexcept -> actor_zeta::executor::abstract_executor & {
   return executor_;
 }
 
@@ -29,7 +29,8 @@ sync_policy::sync_policy(
     : actor_zeta::supervisor(name) {}
 
 auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor & {
-  throw std::runtime_error("executor");
+  std::cerr << "executor"  << std::endl;
+  assert(false);
 }
 
 }

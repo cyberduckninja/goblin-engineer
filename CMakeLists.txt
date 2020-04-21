@@ -46,25 +46,30 @@ endif ()
 #############################################################################################
 #CONAN
 
-    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
-    endif()
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+endif ()
 
-    include(${CMAKE_BINARY_DIR}/conan.cmake)
+include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-    conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
+conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
 
-    if (CONAN_EXPERIMENTAL_INCLUDE)
-        set(CONAN_SYSTEM_INCLUDES "On")
-    endif ()
+if (CONAN_EXPERIMENTAL_INCLUDE)
+    set(CONAN_SYSTEM_INCLUDES "On")
+endif ()
 
+if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_cmake_run(
-            CONANFILE conanfile.txt
             BASIC_SETUP
             BUILD missing
             NO_OUTPUT_DIRS
     )
+else ()
+    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+endif ()
+
 
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #CONAN

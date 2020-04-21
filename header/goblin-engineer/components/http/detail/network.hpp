@@ -91,7 +91,7 @@ namespace goblin_engineer { namespace components { namespace detail {
 
         private:
             response_type response_;
-            std::size_t id_;
+            std::uintptr_t id_;
 
         };
 
