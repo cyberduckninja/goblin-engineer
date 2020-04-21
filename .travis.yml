@@ -86,6 +86,6 @@ script:
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
   - conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
   - mkdir build && cd build
-  - conan install . --build=missing #--install-folder=build
+  - conan install . #-s build_type=Release --build=missing #--install-folder=build
   - cmake .. -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DHTTP_COMPONENT=ON -DCMAKE_CXX_COMPILER=$COMPILER -DCONAN=ON
   - cmake --build . -- VERBOSE=1
