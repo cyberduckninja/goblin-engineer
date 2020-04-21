@@ -18,6 +18,8 @@ option(DEV_MODE "developer mode" OFF)
 
 option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
 
+option(HTTP_COMPONENT "developer mode" OFF)
+
 if (DEV_MODE)
     add_compile_options(
             #-Werror
@@ -28,15 +30,15 @@ if (DEV_MODE)
 
             -Wcast-align
             -Wcast-qual
-            #-Wconversion #-> boost problem
+            -Wconversion
             -Wctor-dtor-privacy
             -Wenum-compare
-            #-Wfloat-equal
-            #-Wnon-virtual-dtor #->asio problem
-            #-Wold-style-cast #-> boost problem
+            -Wfloat-equal
+            -Wnon-virtual-dtor
+            -Wold-style-cast
             -Woverloaded-virtual
             -Wredundant-decls
-            #-Wsign-conversion #-> boost problem
+            -Wsign-conversion
             -Wsign-promo
     )
 endif ()
@@ -87,6 +89,7 @@ set( ${PROJECT_NAME}_source_asio
 
 set( ${PROJECT_NAME}_header_http
         header/goblin-engineer/components/http/http_server/http_session.hpp
+        header/goblin-engineer/components/http/http_server/listener.hpp
         header/goblin-engineer/components/http/http_server/server.hpp
         header/goblin-engineer/components/http/http_server/websocket_session.hpp
 
@@ -99,29 +102,20 @@ set( ${PROJECT_NAME}_header_http
 
 set( ${PROJECT_NAME}_source_http
         header/goblin-engineer/components/http/http_server/http_session.cpp
+        header/goblin-engineer/components/http/http_server/listener.cpp
         header/goblin-engineer/components/http/http_server/server.cpp
         header/goblin-engineer/components/http/http_server/websocket_session.cpp
-
         header/goblin-engineer/components/http/dispather/http_dispather.cpp
 )
 
 set( ${PROJECT_NAME}_header
-
-        header/goblin-engineer/detail/converters.hpp
-        header/goblin-engineer/detail/constructors.hpp
-        header/goblin-engineer/detail/object.hpp
-
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/detail/dynamic.hpp
         header/goblin-engineer/forward.hpp
 )
 
 set( ${PROJECT_NAME}_source
-
         source/abstract_manager_service.cpp
-        source/dynamic.cpp
-        source/root_manager.cpp
 )
 
 
@@ -129,14 +123,17 @@ list(APPEND ${PROJECT_NAME}_header
 
         ${${PROJECT_NAME}_header_base}
         ${${PROJECT_NAME}_header_asio}
-        ${${PROJECT_NAME}_header_http}
 )
 
 list(APPEND ${PROJECT_NAME}_source
         ${${PROJECT_NAME}_source_base}
         ${${PROJECT_NAME}_source_asio}
-        ${${PROJECT_NAME}_source_http}
 )
+
+if(HTTP_COMPONENT)
+    list(APPEND ${PROJECT_NAME}_header ${${PROJECT_NAME}_header_http})
+    list(APPEND ${PROJECT_NAME}_source ${${PROJECT_NAME}_source_http})
+endif()
 
 add_library(
         ${PROJECT_NAME}

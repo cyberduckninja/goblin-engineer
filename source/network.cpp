@@ -12,11 +12,14 @@ namespace goblin_engineer { namespace components {
         : abstract_manager_service(env, name)
         , io_context_(concurrency_hint)
         , work_(boost::asio::make_work_guard(io_context_)) {
-
+          thread_ = std::thread([this](){
+            io_context_.run();
+          });
         }
 
         network_manager_service::~network_manager_service() {
             io_context_.stop();
+            thread_.join();
         }
 
         auto network_manager_service::loop() -> boost::asio::io_context & {

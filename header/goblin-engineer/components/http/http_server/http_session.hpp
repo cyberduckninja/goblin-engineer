@@ -85,7 +85,7 @@ namespace goblin_engineer { namespace components { namespace http_server {
             helper_write_f_t handle_processing;
             const std::size_t id;
         public:
-            http_session(detail::tcp::socket&&, std::size_t, helper_write_f_t);
+            http_session(detail::tcp::socket&&, helper_write_f_t);
 
             ~http_session() = default;
 

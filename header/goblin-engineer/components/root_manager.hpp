@@ -3,7 +3,6 @@
 #include <boost/asio.hpp>
 
 #include <actor-zeta/core.hpp>
-#include <goblin-engineer/detail/dynamic.hpp>
 #include <goblin-engineer/forward.hpp>
 
 namespace goblin_engineer {  namespace components {
@@ -12,19 +11,7 @@ class root_manager final : public actor_zeta::supervisor {
 public:
   root_manager(size_t /*num_worker_threads*/, size_t /*max_throughput*/);
 
-  ~root_manager() override = default;
-
-  template <class Manager, typename... Args>
-  auto add_manager_service(Args &&... args) {
-    actor_zeta::intrusive_ptr<Manager> tmp(
-        new Manager(
-            environment(),
-            std::forward<Args>(args)...
-        )
-    );
-    join(tmp);
-    return tmp;
-  }
+  ~root_manager() override;
 
   void startup();
 
@@ -34,13 +21,13 @@ public:
 
   auto join(actor_zeta::actor) -> actor_zeta::actor_address override;
 
-private:
-
   auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor>) -> actor_zeta::actor_address;
 
-  void enqueue(message, actor_zeta::executor::execution_device *) override;
+  auto loop() -> boost::asio::io_context&;
 
-  auto environment() -> root_manager *;
+private:
+
+  void enqueue(message, actor_zeta::executor::execution_device *) override;
 
   auto start() -> std::size_t;
 
@@ -52,19 +39,27 @@ private:
 
 template<
     typename Actor,
+    typename Manager,
     typename... Args
 >
-auto make_service(root_manager&app, Args&&... args){
-  return app.join(new Actor(std::forward<Args>(args)...));
+auto make_service(actor_zeta::intrusive_ptr<Manager>&manager, Args&&... args){
+  return manager->join(new Actor(manager,std::forward<Args>(args)...));
 }
 
 
 template<
-    typename Actor,
+    typename Manager,
     typename... Args
 >
 auto make_manager_service(root_manager&app,Args&&... args){
-  return app.add_manager_service<Actor>(std::forward<Args>(args)...);
+  actor_zeta::intrusive_ptr<Manager> tmp(
+      new Manager(
+          &app,
+          std::forward<Args>(args)...
+      )
+  );
+  app.join(tmp);
+  return tmp;
 }
 
 }} // namespace goblin_engineer

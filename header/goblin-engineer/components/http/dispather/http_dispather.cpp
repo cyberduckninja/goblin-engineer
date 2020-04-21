@@ -12,7 +12,7 @@
 namespace goblin_engineer { namespace components { namespace dispatcher {
 
 
-    http_dispatcher::http_dispatcher(actor_zeta::intrusive_ptr<http_server::server> ptr, dynamic_config &,dispatcher::wrapper_router&router) : abstract_service(ptr, "http_dispatcher") {
+    http_dispatcher::http_dispatcher(actor_zeta::intrusive_ptr<http_server::server> ptr,dispatcher::wrapper_router&router) : abstract_service(ptr, "http_dispatcher") {
 
         router_ = std::move(router.get_router());
 

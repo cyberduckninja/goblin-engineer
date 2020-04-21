@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include <goblin-engineer/abstract_service.hpp>
-#include <goblin-engineer/detail/dynamic.hpp>
 
 namespace goblin_engineer {  namespace components {
 
@@ -26,15 +25,12 @@ namespace goblin_engineer {  namespace components {
 
     std::size_t root_manager::start() {
         executor().start();
-        return io_context_->run();
+        auto tmp = io_context_->run();
+        return tmp;
     }
 
     auto root_manager::executor() noexcept -> actor_zeta::abstract_executor & {
         return *coordinator_;
-    }
-
-    auto root_manager::environment() -> root_manager* {
-        return static_cast<root_manager*>(this);
     }
 
     auto root_manager::join(actor_zeta::actor ) -> actor_zeta::actor_address {
@@ -59,5 +55,9 @@ namespace goblin_engineer {  namespace components {
         storage_.emplace_back(std::move(supervisor));
         return address;
     }
+    auto root_manager::loop() -> boost::asio::io_context & {
+        return *io_context_;
+    }
+    root_manager::~root_manager() {}
 
-}}
+    }}
