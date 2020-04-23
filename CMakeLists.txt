@@ -16,9 +16,12 @@ option(ALLOW_EXAMPLES "Enable building examples" OFF)
 
 option(DEV_MODE "developer mode" OFF)
 
+option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
+
+option(HTTP_COMPONENT "developer mode" OFF)
+
 if (DEV_MODE)
     add_compile_options(
-            -v
             #-Werror
 
             -Wall
@@ -27,15 +30,15 @@ if (DEV_MODE)
 
             -Wcast-align
             -Wcast-qual
-            #-Wconversion #-> boost problem
+            -Wconversion
             -Wctor-dtor-privacy
             -Wenum-compare
-            #-Wfloat-equal
-            #-Wnon-virtual-dtor #->asio problem
-            #-Wold-style-cast #-> boost problem
+            -Wfloat-equal
+            -Wnon-virtual-dtor
+            -Wold-style-cast
             -Woverloaded-virtual
             -Wredundant-decls
-            #-Wsign-conversion #-> boost problem
+            -Wsign-conversion
             -Wsign-promo
     )
 endif ()
@@ -43,61 +46,95 @@ endif ()
 #############################################################################################
 #CONAN
 
-    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.14/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
-    endif()
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
+endif ()
 
-    include(${CMAKE_BINARY_DIR}/conan.cmake)
+include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-    #conan_add_remote(NAME jinntechio INDEX 1 URL https://api.bintray.com/conan/jinntechio/public-conan)
+conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
 
-    conan_cmake_run(
-            CONANFILE conanfile.txt
-            BASIC_SETUP
-            BUILD missing
-            NO_OUTPUT_DIRS
-    )
+if (CONAN_EXPERIMENTAL_INCLUDE)
+    set(CONAN_SYSTEM_INCLUDES "On")
+endif ()
+
+if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(NO_OUTPUT_DIRS)
+else ()
+    message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
+endif ()
+
 
 include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #CONAN
 #############################################################################################
 
-list(APPEND ${PROJECT_NAME}_header
+set( ${PROJECT_NAME}_header_base
+        header/goblin-engineer/components/root_manager.hpp
+)
 
-        header/goblin-engineer/components/http/http_server/http_session.cpp
+set( ${PROJECT_NAME}_source_base
+        source/root_manager.cpp
+)
+
+set( ${PROJECT_NAME}_header_asio
+        header/goblin-engineer/components/network.hpp
+)
+
+set( ${PROJECT_NAME}_source_asio
+        source/network.cpp
+)
+
+
+set( ${PROJECT_NAME}_header_http
         header/goblin-engineer/components/http/http_server/http_session.hpp
-        header/goblin-engineer/components/http/http_server/server.cpp
+        header/goblin-engineer/components/http/http_server/listener.hpp
         header/goblin-engineer/components/http/http_server/server.hpp
-        header/goblin-engineer/components/http/http_server/websocket_session.cpp
         header/goblin-engineer/components/http/http_server/websocket_session.hpp
 
         header/goblin-engineer/components/http/dispather/http_dispather.hpp
         header/goblin-engineer/components/http/dispather/router.hpp
-        header/goblin-engineer/components/http/dispather/http_dispather.cpp
 
         header/goblin-engineer/components/http/detail/network.hpp
         header/goblin-engineer/components/http.hpp
+)
 
-        header/goblin-engineer/components/network.hpp
+set( ${PROJECT_NAME}_source_http
+        header/goblin-engineer/components/http/http_server/http_session.cpp
+        header/goblin-engineer/components/http/http_server/listener.cpp
+        header/goblin-engineer/components/http/http_server/server.cpp
+        header/goblin-engineer/components/http/http_server/websocket_session.cpp
+        header/goblin-engineer/components/http/dispather/http_dispather.cpp
+)
 
-        header/goblin-engineer/detail/converters.hpp
-        header/goblin-engineer/detail/constructors.hpp
-        header/goblin-engineer/detail/object.hpp
-
+set( ${PROJECT_NAME}_header
         header/goblin-engineer/abstract_manager_service.hpp
         header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/dynamic.hpp
-        header/goblin-engineer/root_manager.hpp
         header/goblin-engineer/forward.hpp
 )
 
-list(APPEND ${PROJECT_NAME}_source
+set( ${PROJECT_NAME}_source
         source/abstract_manager_service.cpp
-        source/dynamic.cpp
-        source/root_manager.cpp
-        source/network.cpp
 )
+
+
+list(APPEND ${PROJECT_NAME}_header
+
+        ${${PROJECT_NAME}_header_base}
+        ${${PROJECT_NAME}_header_asio}
+)
+
+list(APPEND ${PROJECT_NAME}_source
+        ${${PROJECT_NAME}_source_base}
+        ${${PROJECT_NAME}_source_asio}
+)
+
+if(HTTP_COMPONENT)
+    list(APPEND ${PROJECT_NAME}_header ${${PROJECT_NAME}_header_http})
+    list(APPEND ${PROJECT_NAME}_source ${${PROJECT_NAME}_source_http})
+endif()
 
 add_library(
         ${PROJECT_NAME}

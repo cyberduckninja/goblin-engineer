@@ -3,7 +3,6 @@
 #include <goblin-engineer/forward.hpp>
 #include <goblin-engineer/abstract_manager_service.hpp>
 #include <boost/asio.hpp>
-#include <boost/thread.hpp>
 
 namespace goblin_engineer { namespace components {
 
@@ -35,12 +34,12 @@ namespace goblin_engineer { namespace components {
         /// \details The function is temporarily not thread safe
         /// \param[in] msg message which will be added to manager pull
         /// \param[in] exec_device the parameter is temporarily unused
-        void enqueue(message msg, actor_zeta::executor::execution_device *exec_device) override;
+        void enqueue(message msg, actor_zeta::execution_device *exec_device) override;
 
     protected:
         boost::asio::io_context io_context_;                                                
-        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_;     
-        boost::thread_group &threadpool_;                                                   
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_;
+        std::thread thread_;
     };
 
 }}

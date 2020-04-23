@@ -1,4 +1,4 @@
-
+#include <actor-zeta/core.hpp>
 #include "http_dispather.hpp"
 #include "router.hpp"
 
@@ -12,16 +12,17 @@
 namespace goblin_engineer { namespace components { namespace dispatcher {
 
 
-    http_dispatcher::http_dispatcher(actor_zeta::intrusive_ptr<http_server::server> ptr, dynamic_config &,dispatcher::wrapper_router&router) : abstract_service(ptr, "http_dispatcher") {
+    http_dispatcher::http_dispatcher(actor_zeta::intrusive_ptr<http_server::server> ptr,dispatcher::wrapper_router&router) : abstract_service(ptr, "http_dispatcher") {
 
         router_ = std::move(router.get_router());
 
         add_handler(
                 "dispatcher",
-                [this](actor_zeta::actor::context &, detail::query_context&context){
-                    router_.invoke(context);
-                }
+               &http_dispatcher::dispatcher
         );
     }
+    auto http_dispatcher::dispatcher(detail::query_context&context) -> void {
+      router_.invoke(context);
+    }
 
-}}}
+    }}}
