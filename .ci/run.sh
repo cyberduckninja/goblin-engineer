@@ -13,6 +13,6 @@ fi
 conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
 conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
 #- mkdir build && cd build
-conan install . #-s build_type=Release --build=missing #--install-folder=build
-cmake . -DCMAKE_BUILD_TYPE=Release -DHTTP_COMPONENT=ON  -DCONAN=ON
+conan install . --build=missing #-s build_type=Release --build=missing #--install-folder=build
+cmake . -DCMAKE_BUILD_TYPE=Release -DHTTP_COMPONENT=ON -DALLOW_EXAMPLES=ON
 cmake --build . -- VERBOSE=1
