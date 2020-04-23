@@ -1,91 +1,61 @@
-os: linux
-dist: xenial
-language: python
-python: "3.7"
-
-cache:
-  - pip
-  - apt
-  - ccache
-
-
-
-
+linux: &linux
+  os: linux
+  dist: xenial
+  sudo: required
+  language: python
+  python: "3.6"
+  services:
+    - docker
+osx: &osx
+  os: osx
+  language: generic
 matrix:
   include:
-    ##########################################################################
-    # GCC on Linux
-    ##########################################################################
-
-    # GCC 4.9
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug
-      addons: &gcc49
-        apt:
-          packages:
-            - g++-4.9
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-4.9 BUILD_TYPE=Release
-      addons: *gcc49
-
-
-    # GCC 5
-    - env: COMPILER=g++-5 BUILD_TYPE=Debug
-      addons: &gcc5
-        apt:
-          packages:
-            - g++-5
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-5 BUILD_TYPE=Release
-      addons: *gcc5
-
-    # GCC 6
-    - env: COMPILER=g++-6 BUILD_TYPE=Debug
-      addons: &gcc6
-        apt:
-          packages:
-            - g++-6
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-6 BUILD_TYPE=Release
-      addons: *gcc6
-
-    # GCC 7
-    - env: COMPILER=g++-7 BUILD_TYPE=Debug
-      addons: &gcc7
-        apt:
-          packages:
-            - g++-7
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-7 BUILD_TYPE=Release
-      addons: *gcc7
-
-    # GCC 8
-    - env: COMPILER=g++-8 BUILD_TYPE=Debug
-      addons: &gcc8
-        apt:
-          packages:
-            - g++-8
-          sources:
-            - ubuntu-toolchain-r-test
-
-    - env: COMPILER=g++-8 BUILD_TYPE=Release
-      addons: *gcc8
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=4.9 CONAN_DOCKER_IMAGE=conanio/gcc49
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=conanio/gcc5
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=conanio/gcc6
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
+    - <<: *linux
+      env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=3.9 CONAN_DOCKER_IMAGE=conanio/clang39
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=4.0 CONAN_DOCKER_IMAGE=conanio/clang40
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
+    - <<: *linux
+      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
+    - <<: *osx
+      osx_image: xcode7.3
+      env: CONAN_APPLE_CLANG_VERSIONS=7.3
+    - <<: *osx
+      osx_image: xcode8.3
+      env: CONAN_APPLE_CLANG_VERSIONS=8.1
+    - <<: *osx
+      osx_image: xcode9
+      env: CONAN_APPLE_CLANG_VERSIONS=9.0
+    - <<: *osx
+      osx_image: xcode9.4
+      env: CONAN_APPLE_CLANG_VERSIONS=9.1
+    - <<: *osx
+      osx_image: xcode10
+      env: CONAN_APPLE_CLANG_VERSIONS=10.0
 
 install:
-  - pip install conan
-  - conan user
+  - chmod +x .ci/install.sh
+  - ./.ci/install.sh
 
 script:
-  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-  - conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
-  #- mkdir build && cd build
-  - conan install . #-s build_type=Release --build=missing #--install-folder=build
-  - cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DHTTP_COMPONENT=ON -DCMAKE_CXX_COMPILER=$COMPILER -DCONAN=ON
-  - cmake --build . -- VERBOSE=1
+  - chmod +x .ci/run.sh
+  - ./.ci/run.sh
+#script:
+#  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+#  - conan remote add jinncrafters https://api.bintray.com/conan/jinncrafters/conan
+#  #- mkdir build && cd build
+#  - conan install . #-s build_type=Release --build=missing #--install-folder=build
+#  - cmake . -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DHTTP_COMPONENT=ON -DCMAKE_CXX_COMPILER=$COMPILER -DCONAN=ON
+#  - cmake --build . -- VERBOSE=1
