@@ -8,7 +8,7 @@
 Add the corresponding remote to your conan:
 
 ```bash
-conan remote add jinncrafters https://api.bintray.com/conan/cyberduckninja/conan
+conan remote add cyberduckninja https://api.bintray.com/conan/cyberduckninja/conan
 ```
 
 ### Basic setup
