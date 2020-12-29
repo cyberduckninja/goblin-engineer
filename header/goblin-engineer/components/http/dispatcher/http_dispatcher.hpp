@@ -13,6 +13,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
             ~http_dispatcher() override = default;
 
             auto dispatcher(detail::query_context&context) -> void ;
+
         private:
             router router_;
 

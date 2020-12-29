@@ -116,7 +116,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
         }
         /// TODO: not implement update
 /*
-        auto update(dispather&r){
+        auto update(dispatcher&r){
            for(auto&&i:r ){
 
            }

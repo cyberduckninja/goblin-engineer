@@ -1,7 +1,8 @@
 [requires]
-boost/1.71.0@conan/stable
-actor-zeta/1.0.0a4@jinncrafters/stable
+boost/1.75.0
+actor-zeta/1.0.0a4@cyberduckninja/stable
 doxygen_installer/1.8.15@bincrafters/stable
+catch2/2.13.3
 
 [options]
 #boost:error_code_header_only=True

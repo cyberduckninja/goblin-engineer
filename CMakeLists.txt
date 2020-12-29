@@ -20,10 +20,8 @@ option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
 
 option(HTTP_COMPONENT "developer mode" OFF)
 
-if (DEV_MODE)
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     add_compile_options(
-            #-Werror
-
             -Wall
             -Wextra
             -Wpedantic
@@ -41,19 +39,12 @@ if (DEV_MODE)
             -Wsign-conversion
             -Wsign-promo
     )
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    add_compile_options(/W4 /WX)
 endif ()
 
 #############################################################################################
 #CONAN
-
-if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
-endif ()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
 
 if (CONAN_EXPERIMENTAL_INCLUDE)
     set(CONAN_SYSTEM_INCLUDES "On")
@@ -94,8 +85,8 @@ set( ${PROJECT_NAME}_header_http
         header/goblin-engineer/components/http/http_server/server.hpp
         header/goblin-engineer/components/http/http_server/websocket_session.hpp
 
-        header/goblin-engineer/components/http/dispather/http_dispather.hpp
-        header/goblin-engineer/components/http/dispather/router.hpp
+        header/goblin-engineer/components/http/dispatcher/http_dispatcher.hpp
+        header/goblin-engineer/components/http/dispatcher/router.hpp
 
         header/goblin-engineer/components/http/detail/network.hpp
         header/goblin-engineer/components/http.hpp
@@ -106,7 +97,7 @@ set( ${PROJECT_NAME}_source_http
         header/goblin-engineer/components/http/http_server/listener.cpp
         header/goblin-engineer/components/http/http_server/server.cpp
         header/goblin-engineer/components/http/http_server/websocket_session.cpp
-        header/goblin-engineer/components/http/dispather/http_dispather.cpp
+        header/goblin-engineer/components/http/dispatcher/http_dispatcher.cpp
 )
 
 set( ${PROJECT_NAME}_header

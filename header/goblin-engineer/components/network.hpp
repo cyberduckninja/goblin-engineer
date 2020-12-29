@@ -19,7 +19,7 @@ namespace goblin_engineer { namespace components {
         network_manager_service(
                 root_manager *env
                 , actor_zeta::detail::string_view name
-                , std::size_t concurrency_hint
+                , int concurrency_hint
         );
         
         /// \brief Destructor
