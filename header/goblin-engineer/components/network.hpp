@@ -17,7 +17,7 @@ namespace goblin_engineer { namespace components {
         /// \param[in] name name for manager
         /// \param[in] concurrency_hint number of threads
         network_manager_service(
-                root_manager *env
+                abstract_manager_service *env
                 , actor_zeta::detail::string_view name
                 , int concurrency_hint
         );

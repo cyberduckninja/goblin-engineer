@@ -1,11 +1,10 @@
-#include <goblin-engineer/components/root_manager.hpp>
 #include <actor-zeta/core.hpp>
 #include <goblin-engineer/components/network.hpp>
 
 namespace goblin_engineer { namespace components {
 
         network_manager_service::network_manager_service(
-                root_manager *env,
+                abstract_manager_service *env,
                 actor_zeta::detail::string_view name,
                 int concurrency_hint
         )

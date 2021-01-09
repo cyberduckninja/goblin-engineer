@@ -33,4 +33,23 @@ auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor & {
   assert(false);
 }
 
+    auto async_policy_star::join(actor_zeta::actor tmp) -> actor_zeta::actor_address {
+        auto actor = std::move(tmp);
+        auto address = actor->address();
+        actor_zeta::link(*this, address);
+        actor_storage_.emplace_back(std::move(actor));
+        return address;
+    }
+
+    auto async_policy_star::join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor_address {
+        auto supervisor = std::move(tmp);
+        auto address = supervisor->address();
+        actor_zeta::link(*this, address);
+        storage_.emplace_back(std::move(supervisor));
+        return address;
+    }
+
+    auto async_policy_star::executor() noexcept -> actor_zeta::executor::abstract_executor & {
+        return *coordinator_;
+    }
 }

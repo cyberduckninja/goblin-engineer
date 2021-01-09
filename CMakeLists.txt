@@ -57,18 +57,8 @@ else ()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif ()
 
-
-include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #CONAN
 #############################################################################################
-
-set( ${PROJECT_NAME}_header_base
-        header/goblin-engineer/components/root_manager.hpp
-)
-
-set( ${PROJECT_NAME}_source_base
-        source/root_manager.cpp
-)
 
 set( ${PROJECT_NAME}_header_asio
         header/goblin-engineer/components/network.hpp
@@ -80,11 +70,6 @@ set( ${PROJECT_NAME}_source_asio
 
 
 set( ${PROJECT_NAME}_header_http
-        header/goblin-engineer/components/http/http_server/http_session.hpp
-        header/goblin-engineer/components/http/http_server/listener.hpp
-        header/goblin-engineer/components/http/http_server/server.hpp
-        header/goblin-engineer/components/http/http_server/websocket_session.hpp
-
         header/goblin-engineer/components/http/dispatcher/http_dispatcher.hpp
         header/goblin-engineer/components/http/dispatcher/router.hpp
 
@@ -93,10 +78,6 @@ set( ${PROJECT_NAME}_header_http
 )
 
 set( ${PROJECT_NAME}_source_http
-        header/goblin-engineer/components/http/http_server/http_session.cpp
-        header/goblin-engineer/components/http/http_server/listener.cpp
-        header/goblin-engineer/components/http/http_server/server.cpp
-        header/goblin-engineer/components/http/http_server/websocket_session.cpp
         header/goblin-engineer/components/http/dispatcher/http_dispatcher.cpp
 )
 
@@ -112,13 +93,10 @@ set( ${PROJECT_NAME}_source
 
 
 list(APPEND ${PROJECT_NAME}_header
-
-        ${${PROJECT_NAME}_header_base}
         ${${PROJECT_NAME}_header_asio}
 )
 
 list(APPEND ${PROJECT_NAME}_source
-        ${${PROJECT_NAME}_source_base}
         ${${PROJECT_NAME}_source_asio}
 )
 
