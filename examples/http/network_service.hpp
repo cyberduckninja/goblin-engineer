@@ -18,7 +18,6 @@
 #include "http_connection.hpp"
 #include "context.hpp"
 
-#include <actor-zeta/core.hpp>
 #include <goblin-engineer.hpp>
 
 
@@ -29,20 +28,20 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 
-class policy_empty_storage : public actor_zeta::supervisor {
+class policy_empty_storage : public goblin_engineer::supervisor {
 public:
-    policy_empty_storage(actor_zeta::detail::string_view ,actor_zeta::abstract_executor* );
+    policy_empty_storage(goblin_engineer::string_view ,goblin_engineer::abstract_executor* );
 
     ~policy_empty_storage() override = default;
 
-    auto executor() noexcept -> actor_zeta::abstract_executor & override;
+    auto executor() noexcept -> goblin_engineer::abstract_executor & override;
 
-    auto join(actor_zeta::actor tmp) -> actor_zeta::actor_address override;
+    auto join(goblin_engineer::actor tmp) -> goblin_engineer::actor_address override;
 
-    auto join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor_address;
+    auto join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor> tmp) -> goblin_engineer::actor_address;
 
 private:
-    std::unique_ptr<actor_zeta::abstract_executor> coordinator_;
+    std::unique_ptr<goblin_engineer::abstract_executor> coordinator_;
 };
 
 using manager_empty_storage =  goblin_engineer::basic_manager_service_t<policy_empty_storage>;
@@ -54,7 +53,7 @@ inline void fail(beast::error_code ec, char const *what) {
 class network_service final : public manager_empty_storage  {
 public:
     network_service(
-            actor_zeta::abstract_executor* ,
+            goblin_engineer::abstract_executor* ,
             net::io_context &ioc,
             tcp::endpoint endpoint
     );
@@ -65,7 +64,7 @@ public:
 
     void write(session_id id, goblin_engineer::http::response_type& response);
 
-    void enqueue(actor_zeta::message msg, actor_zeta::execution_device *) override;
+    void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
 
 private:
 

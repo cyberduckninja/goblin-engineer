@@ -1,53 +1,17 @@
 #include <memory>
 #include <iostream>
-#include <actor-zeta/core.hpp>
-#include <goblin-engineer.hpp>
-#include "network_service.hpp"
 
-#include <boost/stacktrace.hpp>
-#include <csignal>
+#include <goblin-engineer.hpp>
+
+#include "network_service.hpp"
 
 auto thread_pool_deleter = [](actor_zeta::abstract_executor* ptr){
     ptr->stop();
     delete ptr;
 };
 
-void my_signal_handler(int signum) {
-    ::signal(signum, SIG_DFL);
-    std::cerr << "signal called:"
-              << std::endl
-              << boost::stacktrace::stacktrace()
-              << std::endl;
-    ::raise(SIGABRT);
-}
-
-void setup_handlers() {
-    ::signal(SIGSEGV, &my_signal_handler);
-    ::signal(SIGABRT, &my_signal_handler);
-}
-
-static auto original_terminate_handler{std::get_terminate()};
-
-void terminate_handler() {
-    std::cerr << "terminate called:"
-              << std::endl
-              << boost::stacktrace::stacktrace()
-              << std::endl;
-    original_terminate_handler();
-    std::abort();
-}
-
-template<typename Manager, typename... Args>
-auto make_manager_service(Args &&... args) -> actor_zeta::intrusive_ptr<Manager>  {
-    return actor_zeta::intrusive_ptr<Manager>(
-            new Manager(std::forward<Args>(args)...));
-}
-
-
 int main(int /*argc*/, char **/*argv[]*/) {
-    setup_handlers();
 
-    std::set_terminate(terminate_handler);
     auto const address = net::ip::make_address("0.0.0.0");
     auto const port = static_cast<unsigned short>(9999);
     auto const threads = std::max<int>(1, 1);
@@ -61,7 +25,7 @@ int main(int /*argc*/, char **/*argv[]*/) {
             thread_pool_deleter
     );
 
-    auto nm = make_manager_service<network_service>(executor.get(),ioc, tcp::endpoint{address, port});
+    auto nm = goblin_engineer::make_manager_service<network_service>(executor.get(),ioc, tcp::endpoint{address, port});
     ///auto mq = make_manager_service<manager_queue>(executor.get());
     ///nm->join(mq);
 

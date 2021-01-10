@@ -10,8 +10,6 @@
 #include <boost/beast/version.hpp>
 #include <boost/asio.hpp>
 
-#include <boost/stacktrace.hpp>
-
 #include "dto.hpp"
 #include "context.hpp"
 

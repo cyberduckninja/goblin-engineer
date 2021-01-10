@@ -4,8 +4,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include <actor-zeta/core.hpp>
-#include <actor-zeta/detail/string_view.hpp>
+#include <goblin-engineer.hpp>
 
 #include <boost/asio/ip/tcp.hpp>
 using tcp = boost::asio::ip::tcp;
@@ -14,7 +13,7 @@ class http_connection;
 using session_id = std::uintptr_t;
 using session_type = http_connection;
 
-using addres_book = std::function<actor_zeta::actor_address(actor_zeta::detail::string_view)>;
+using addres_book = std::function<goblin_engineer::actor_address(goblin_engineer::string_view)>;
 
 class network_context final {
 public:
