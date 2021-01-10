@@ -61,7 +61,7 @@ endif ()
 #############################################################################################
 
 set( ${PROJECT_NAME}_header_asio
-        header/goblin-engineer/components/network.hpp
+        header/goblin-engineer/network.hpp
 )
 
 set( ${PROJECT_NAME}_source_asio
@@ -70,15 +70,15 @@ set( ${PROJECT_NAME}_source_asio
 
 
 set( ${PROJECT_NAME}_header_http
-        header/goblin-engineer/components/http/dispatcher/http_dispatcher.hpp
-        header/goblin-engineer/components/http/dispatcher/router.hpp
+        header/goblin-engineer/http/dispatcher/http_dispatcher.hpp
+        header/goblin-engineer/http/dispatcher/router.hpp
 
-        header/goblin-engineer/components/http/detail/network.hpp
-        header/goblin-engineer/components/http.hpp
+        header/goblin-engineer/http/detail/network.hpp
+        header/goblin-engineer/http.hpp
 )
 
 set( ${PROJECT_NAME}_source_http
-        header/goblin-engineer/components/http/dispatcher/http_dispatcher.cpp
+        header/goblin-engineer/http/dispatcher/http_dispatcher.cpp
 )
 
 set( ${PROJECT_NAME}_header

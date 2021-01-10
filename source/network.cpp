@@ -1,5 +1,5 @@
 #include <actor-zeta/core.hpp>
-#include <goblin-engineer/components/network.hpp>
+#include <goblin-engineer/network.hpp>
 
 namespace goblin_engineer { namespace components {
 

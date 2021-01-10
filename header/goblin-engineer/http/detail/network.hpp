@@ -29,8 +29,8 @@ namespace goblin_engineer { namespace components { namespace detail {
         namespace beast = boost::beast;
         namespace http = beast::http;
         using http_method = http::verb;
-        using request_type = http::request<http::string_body>;
-        using response_type = http::response<http::string_body>;
+        using request_type = http::request<http::dynamic_body>;
+        using response_type = http::response<http::dynamic_body>;
 
         namespace websocket = boost::beast::websocket;
 

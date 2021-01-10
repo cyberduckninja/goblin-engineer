@@ -12,12 +12,20 @@ PROJECT(${project} VERSION "${CMAKE_PROJECT_VERSION}" LANGUAGES CXX)
 
 add_executable(
         ${PROJECT_NAME}
+        context.cpp
+        context.hpp
+        http_connection.cpp
+        http_connection.hpp
+        dto.cpp
+        dto.hpp
         main.cpp
+        network_service.cpp
+        network_service.hpp
 )
 
 target_link_libraries (
         ${PROJECT_NAME} PUBLIC
         goblin-engineer
-        ${Boost_LIBRARIES}
         ${CONAN_LIBS}
+        dl
 )

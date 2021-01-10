@@ -4,7 +4,7 @@
 /// service is described here
 
 #include <goblin-engineer.hpp>
-#include <goblin-engineer/components/network.hpp>
+#include <goblin-engineer/network.hpp>
 
 #include <boost/asio.hpp>
 #include <boost/beast/core.hpp>

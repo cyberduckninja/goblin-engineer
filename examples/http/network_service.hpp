@@ -22,7 +22,6 @@
 #include <goblin-engineer.hpp>
 
 
-
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
@@ -64,7 +63,7 @@ public:
 
     void run();
 
-    void write(session_id id, response_type& response);
+    void write(session_id id, goblin_engineer::http::response_type& response);
 
     void enqueue(actor_zeta::message msg, actor_zeta::execution_device *) override;
 
