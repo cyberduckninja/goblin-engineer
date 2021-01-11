@@ -8,7 +8,7 @@ namespace goblin_engineer {
 
 class async_policy_star : public actor_zeta::supervisor {
 public:
-  async_policy_star(actor_zeta::detail::string_view view,actor_zeta::executor::abstract_executor* executor):actor_zeta::supervisor(view),coordinator_(executor){}
+  async_policy_star(actor_zeta::abstract_executor* executor,actor_zeta::detail::string_view view):actor_zeta::supervisor(view),coordinator_(executor){}
 
   ~async_policy_star() override = default;
 

@@ -23,8 +23,7 @@ void http_connection::write(goblin_engineer::http::response_type response) {
 
 void http_connection::process_request() {
     http_dto data(id_,std::move(request_));
-    context_->dispatch(std::move(data) );
-
+    context_->dispatch(std::move(data));
 }
 
 void http_connection::read_request() {

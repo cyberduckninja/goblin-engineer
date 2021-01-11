@@ -30,7 +30,7 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 class policy_empty_storage : public goblin_engineer::supervisor {
 public:
-    policy_empty_storage(goblin_engineer::string_view ,goblin_engineer::abstract_executor* );
+    policy_empty_storage(goblin_engineer::abstract_executor*,goblin_engineer::string_view );
 
     ~policy_empty_storage() override = default;
 

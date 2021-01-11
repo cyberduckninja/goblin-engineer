@@ -5,13 +5,13 @@ PROJECT(goblin-engineer-example-http)
 
 add_executable(
         ${PROJECT_NAME}
+        main.cpp
         context.cpp
         context.hpp
         http_connection.cpp
         http_connection.hpp
         dto.cpp
         dto.hpp
-        main.cpp
         network_service.cpp
         network_service.hpp
 )

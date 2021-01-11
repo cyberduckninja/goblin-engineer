@@ -33,7 +33,7 @@ public:
         actor_zeta::send(address_book_("mq"),self_,"dispatch",std::forward<Args>(args)...);
     }
 
-    session_type& session(network_context*, tcp::socket &&socket);
+    session_type& session(network_context*, tcp::socket socket);
     session_type& session(session_id id);
 
     auto begin() -> iterator;

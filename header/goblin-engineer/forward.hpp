@@ -1,10 +1,10 @@
 #pragma once
 
-#include <actor-zeta/messaging/message.hpp>
+#include <actor-zeta/core.hpp>
 
 namespace goblin_engineer {
 
-    using message = actor_zeta::messaging::message;
+    using message = actor_zeta::message;
 
     struct abstract_service;
 
