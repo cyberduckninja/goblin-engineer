@@ -1,6 +1,5 @@
 #include "http_dispatcher.hpp"
 #include "router.hpp"
-#include <actor-zeta/core.hpp>
 
 #include <unordered_map>
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <goblin-engineer/forward.hpp>
-#include <actor-zeta/core.hpp>
 
 namespace goblin_engineer {
 

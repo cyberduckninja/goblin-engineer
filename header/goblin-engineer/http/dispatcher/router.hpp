@@ -5,7 +5,6 @@
 #include <string>
 #include <functional>
 
-#include <actor-zeta/core.hpp>
 #include <goblin-engineer/http/detail/network.hpp>
 
 namespace goblin_engineer { namespace components { namespace dispatcher {

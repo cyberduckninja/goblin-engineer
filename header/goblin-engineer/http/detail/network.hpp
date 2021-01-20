@@ -17,8 +17,6 @@
 #include <boost/beast/websocket.hpp>
 #include <boost/beast/core/tcp_stream.hpp>
 
-#include <actor-zeta/core.hpp>
-
 namespace goblin_engineer { namespace components { namespace detail {
 
         using boost::string_view;

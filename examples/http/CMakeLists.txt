@@ -1,6 +1,3 @@
-cmake_minimum_required(VERSION 3.0)
-
-cmake_policy(SET CMP0048 NEW)
 PROJECT(goblin-engineer-example-http)
 
 add_executable(
@@ -19,4 +16,5 @@ add_executable(
 target_link_libraries (
         ${PROJECT_NAME} PRIVATE
         goblin-engineer
+        ${CONAN_LIBS}
 )

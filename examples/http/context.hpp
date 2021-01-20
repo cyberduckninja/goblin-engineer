@@ -29,8 +29,8 @@ public:
     ~network_context();
 
     template<typename ...Args>
-    void dispatch(Args... args){
-        actor_zeta::send(address_book_("mq"),self_,"dispatch",std::forward<Args>(args)...);
+    void dispatch(Args... args) {
+      actor_zeta::send(address_book_("mq"),self_,"dispatch",std::forward<Args>(args)...);
     }
 
     session_type& session(network_context*, tcp::socket socket);

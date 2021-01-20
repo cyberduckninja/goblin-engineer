@@ -1,6 +1,5 @@
 #pragma once
 
-#include <actor-zeta/core.hpp>
 #include <goblin-engineer/abstract_service.hpp>
 
 #include "router.hpp"

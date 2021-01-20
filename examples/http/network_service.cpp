@@ -1,30 +1,12 @@
 #include "network_service.hpp"
+#include "http_connection.hpp"
 
-auto policy_empty_storage::join(goblin_engineer::actor tmp) -> goblin_engineer::actor_address {
-    auto actor = std::move(tmp);
-    auto address = actor->address();
-    goblin_engineer::link(*this, address);
-    return address;
-}
 
-auto policy_empty_storage::join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor> tmp) -> goblin_engineer::actor_address {
-    auto supervisor = std::move(tmp);
-    auto address = supervisor->address();
-    goblin_engineer::link(*this, address);
-    return address;
-}
-
-auto policy_empty_storage::executor() noexcept -> goblin_engineer::abstract_executor & {
-    return *coordinator_;
-}
-
-policy_empty_storage::policy_empty_storage(goblin_engineer::abstract_executor *executor,goblin_engineer::string_view view)
-        :goblin_engineer::supervisor(view),coordinator_(executor){}
 
 constexpr bool reuse_address = true;
 
 network_service::network_service(goblin_engineer::abstract_executor* executor, net::io_context &ioc, tcp::endpoint endpoint)
-        :  manager_empty_storage(executor,"network_manager")
+        :  goblin_engineer::abstract_manager_service(executor,"network_manager")
         ,  io_context_(ioc)
         , acceptor_(ioc,endpoint,reuse_address)
         , context_(std::make_unique<network_context>( [this](const goblin_engineer::string_view& name) -> goblin_engineer::actor_address {
