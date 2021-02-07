@@ -8,7 +8,7 @@ namespace goblin_engineer {
     }
 
     sync_policy::sync_policy(
-            actor_zeta::supervisor *,
+            goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>,
             actor_zeta::detail::string_view name)
             : actor_zeta::supervisor(name) {}
 
@@ -33,12 +33,15 @@ namespace goblin_engineer {
         return address;
     }
 
-    auto async_policy::executor() noexcept -> actor_zeta::executor::abstract_executor & {
-        return *coordinator_;
+
+    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>, actor_zeta::detail::string_view view)
+        :actor_zeta::supervisor(view) {
+
     }
 
-    async_policy::async_policy(actor_zeta::abstract_executor *executor, actor_zeta::detail::string_view view)
-            : actor_zeta::supervisor(view), coordinator_(executor) {}
+    async_policy::async_policy(actor_zeta::detail::string_view view) : supervisor(view) {
+
+    }
 
 
     auto async_policy_lite::join(goblin_engineer::actor tmp) -> goblin_engineer::actor_address {
@@ -55,12 +58,5 @@ namespace goblin_engineer {
         goblin_engineer::link(*this, address);
         return address;
     }
-
-    auto async_policy_lite::executor() noexcept -> goblin_engineer::abstract_executor & {
-        return *coordinator_;
-    }
-
-    async_policy_lite::async_policy_lite(goblin_engineer::abstract_executor *executor, goblin_engineer::string_view view)
-            : goblin_engineer::supervisor(view), coordinator_(executor) {}
 
 }

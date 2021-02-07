@@ -12,18 +12,17 @@ namespace goblin_engineer {
     }
 
     template<
-            typename Root,
             typename Manager,
             typename... Args
     >
-    auto make_manager_service(Root &app, Args &&... args) {
+    auto make_manager_service(actor_zeta::intrusive_ptr<Manager> &manager, Args &&... args) {
         actor_zeta::intrusive_ptr<Manager> tmp(
                 new Manager(
-                        &app,
+                        &manager,
                         std::forward<Args>(args)...
                 )
         );
-        app.join(tmp);
+        manager->join(tmp);
         return tmp;
     }
 

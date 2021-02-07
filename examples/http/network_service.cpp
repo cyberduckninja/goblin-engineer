@@ -1,12 +1,25 @@
 #include "network_service.hpp"
 #include "http_connection.hpp"
 
-
+std::unique_ptr<actor_zeta::abstract_executor,decltype(thread_pool_deleter)> executor(
+        new actor_zeta::executor_t<actor_zeta::work_sharing>(
+                1,
+                std::numeric_limits<std::size_t>::max()
+        ),
+        thread_pool_deleter
+);
 
 constexpr bool reuse_address = true;
 
-network_service::network_service(goblin_engineer::abstract_executor* executor, net::io_context &ioc, tcp::endpoint endpoint)
-        :  goblin_engineer::abstract_manager_service(executor,"network_manager")
+network_service::network_service( net::io_context &ioc, tcp::endpoint endpoint)
+        :  goblin_engineer::abstract_manager_service("network_manager")
+        , coordinator_(
+                new actor_zeta::executor_t<actor_zeta::work_sharing>(
+                        1,
+                        std::numeric_limits<std::size_t>::max()
+                ),
+                thread_pool_deleter
+                )
         ,  io_context_(ioc)
         , acceptor_(ioc,endpoint,reuse_address)
         , context_(std::make_unique<network_context>( [this](const goblin_engineer::string_view& name) -> goblin_engineer::actor_address {

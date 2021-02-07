@@ -33,10 +33,14 @@ inline void fail(beast::error_code ec, char const *what) {
     std::cerr << what << ": " << ec.message() << "\n";
 }
 
+auto thread_pool_deleter = [](actor_zeta::abstract_executor* ptr){
+    ptr->stop();
+    delete ptr;
+};
+
 class network_service final : public goblin_engineer::abstract_manager_service {
 public:
     network_service(
-            goblin_engineer::abstract_executor* ,
             net::io_context &ioc,
             tcp::endpoint endpoint
     );
@@ -49,8 +53,17 @@ public:
 
     void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
 
+    auto executor() noexcept -> goblin_engineer::abstract_executor& {
+        return *coordinator_;
+    }
+
 private:
 
+    auto  get_executor() noexcept -> goblin_engineer::abstract_executor* override {
+        return  coordinator_.get();
+    }
+
+    std::unique_ptr<actor_zeta::abstract_executor,decltype(thread_pool_deleter)>coordinator_;
     net::io_context &io_context_;
     tcp::acceptor acceptor_;
     std::unique_ptr<network_context> context_;
