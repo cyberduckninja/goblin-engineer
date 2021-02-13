@@ -32,11 +32,15 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 inline void fail(beast::error_code ec, char const *what) {
     std::cerr << what << ": " << ec.message() << "\n";
 }
+namespace detail{
+    struct deleter {
+        void operator()(actor_zeta::abstract_executor* ptr){
+            ptr->stop();
+            delete ptr;
+        }
+    };
+}
 
-auto thread_pool_deleter = [](actor_zeta::abstract_executor* ptr){
-    ptr->stop();
-    delete ptr;
-};
 
 class network_service final : public goblin_engineer::abstract_manager_service {
 public:
@@ -63,7 +67,7 @@ private:
         return  coordinator_.get();
     }
 
-    std::unique_ptr<actor_zeta::abstract_executor,decltype(thread_pool_deleter)>coordinator_;
+    std::unique_ptr<actor_zeta::abstract_executor,detail::deleter>coordinator_;
     net::io_context &io_context_;
     tcp::acceptor acceptor_;
     std::unique_ptr<network_context> context_;

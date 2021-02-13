@@ -1,14 +1,6 @@
 #include "network_service.hpp"
 #include "http_connection.hpp"
 
-std::unique_ptr<actor_zeta::abstract_executor,decltype(thread_pool_deleter)> executor(
-        new actor_zeta::executor_t<actor_zeta::work_sharing>(
-                1,
-                std::numeric_limits<std::size_t>::max()
-        ),
-        thread_pool_deleter
-);
-
 constexpr bool reuse_address = true;
 
 network_service::network_service( net::io_context &ioc, tcp::endpoint endpoint)
@@ -18,7 +10,7 @@ network_service::network_service( net::io_context &ioc, tcp::endpoint endpoint)
                         1,
                         std::numeric_limits<std::size_t>::max()
                 ),
-                thread_pool_deleter
+                detail::deleter()
                 )
         ,  io_context_(ioc)
         , acceptor_(ioc,endpoint,reuse_address)
