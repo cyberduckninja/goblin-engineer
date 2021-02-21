@@ -14,7 +14,7 @@ session_type &network_context::session(network_context *ctx, tcp::socket socket)
     return *session;
 }
 
-session_type &network_context::session(session_id id) {
+session_type &network_context::session(goblin_engineer::http::session_id id) {
     return *sessions_.at(id);
 }
 

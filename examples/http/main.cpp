@@ -1,7 +1,7 @@
 #include <memory>
 #include <iostream>
 
-#include <goblin-engineer.hpp>
+#include <goblin-engineer/core.hpp>
 
 #include "network_service.hpp"
 

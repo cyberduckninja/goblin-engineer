@@ -17,7 +17,7 @@
 
 #include "context.hpp"
 
-#include <goblin-engineer.hpp>
+#include <goblin-engineer/core.hpp>
 #include <goblin-engineer/http.hpp>
 
 
@@ -45,15 +45,15 @@ namespace detail{
 class network_service final : public goblin_engineer::abstract_manager_service {
 public:
     network_service(
-            net::io_context &ioc,
-            tcp::endpoint endpoint
+            net::io_context &,
+            tcp::endpoint
     );
 
     ~network_service();
 
     void run();
 
-    void write(session_id id, goblin_engineer::http::response_t& response);
+    void write(goblin_engineer::http::session_id id, goblin_engineer::http::response_t& response);
 
     void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
 

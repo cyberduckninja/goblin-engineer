@@ -33,7 +33,7 @@ void network_service::run() {
     do_accept();
 }
 
-void network_service::write(session_id id, goblin_engineer::http::response_t& response) {
+void network_service::write(goblin_engineer::http::session_id id, goblin_engineer::http::response_t& response) {
     context_->session(id).write(std::move(response));
 }
 

@@ -4,20 +4,19 @@
 #include <vector>
 #include <unordered_map>
 
-#include <goblin-engineer.hpp>
+#include <goblin-engineer/http.hpp>
 
 #include <boost/asio/ip/tcp.hpp>
 using tcp = boost::asio::ip::tcp;
 
 class http_connection;
-using session_id = std::uintptr_t;
 using session_type = http_connection;
 
 using addres_book = std::function<goblin_engineer::actor_address(goblin_engineer::string_view)>;
 
 class network_context final {
 public:
-    using storage_type = std::unordered_map<session_id,std::shared_ptr<http_connection>>;
+    using storage_type = std::unordered_map<goblin_engineer::http::session_id,std::shared_ptr<http_connection>>;
     using const_iterator = storage_type::const_iterator;
     using iterator = storage_type::iterator;
 
@@ -34,7 +33,7 @@ public:
     }
 
     session_type& session(network_context*, tcp::socket socket);
-    session_type& session(session_id id);
+    session_type& session(goblin_engineer::http::session_id id);
 
     auto begin() -> iterator;
 

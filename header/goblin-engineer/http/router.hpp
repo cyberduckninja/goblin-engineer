@@ -10,7 +10,7 @@
 namespace goblin_engineer { namespace http {
 
     struct http_method_hasher final {
-        std::size_t operator()(const http_method &k) const {
+        std::size_t operator()(const method_t &k) const {
             using std::size_t;
             using std::hash;
 
@@ -83,12 +83,12 @@ namespace goblin_engineer { namespace http {
 
         ~router() = default;
 
-        using storage = std::unordered_map<http_method, http_method_container, http_method_hasher>;
+        using storage = std::unordered_map<method_t, http_method_container, http_method_hasher>;
         using iterator = storage::iterator;
 
         template<class F>
         auto registration_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 const options &options,
                 F handler
@@ -147,7 +147,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::delete_,
+                    method_t::delete_,
                     route_path,
                     std::move(handler)
             );
@@ -160,7 +160,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::delete_,
+                    method_t::delete_,
                     route_path,
                     options,
                     std::move(handler)
@@ -173,7 +173,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::get,
+                    method_t::get,
                     route_path,
                     std::forward<F>(handler)
             );
@@ -186,7 +186,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::get,
+                    method_t::get,
                     route_path,
                     options,
                     std::move(handler)
@@ -199,7 +199,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::head,
+                    method_t::head,
                     route_path,
                     std::move(handler)
             );
@@ -212,7 +212,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::head,
+                    method_t::head,
                     route_path,
                     options,
                     std::move(handler)
@@ -225,7 +225,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::post,
+                    method_t::post,
                     route_path,
                     std::forward<F>(handler)
             );
@@ -238,7 +238,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::post,
+                    method_t::post,
                     route_path,
                     options,
                     std::move(handler)
@@ -251,7 +251,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::put,
+                    method_t::put,
                     route_path,
                     std::move(handler)
             );
@@ -264,7 +264,7 @@ namespace goblin_engineer { namespace http {
                 F handler
         ) {
             add_handler(
-                    http_method::put,
+                    method_t::put,
                     route_path,
                     options,
                     std::forward<F>(handler)
@@ -275,7 +275,7 @@ namespace goblin_engineer { namespace http {
 
         template<typename F>
         auto add_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 F handler
         ) {
@@ -289,7 +289,7 @@ namespace goblin_engineer { namespace http {
 
         template<typename F>
         auto add_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 const options &options,
                 F handler

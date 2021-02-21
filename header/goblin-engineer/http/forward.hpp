@@ -2,7 +2,6 @@
 
 #include <boost/beast/http.hpp>
 
-
 namespace goblin_engineer { namespace http {
 
         namespace beast = boost::beast;
@@ -12,6 +11,7 @@ namespace goblin_engineer { namespace http {
         using request_t = http::request<http::string_body>;
         using response_t = http::response<http::string_body>;
         using status_t = http::status;
+        using session_id = std::uintptr_t;
 
 
         inline status_t status(response_t &response ){

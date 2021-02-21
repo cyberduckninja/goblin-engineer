@@ -3,7 +3,7 @@
 /// \details The basic usage of the library with creating manager for http
 /// service is described here
 
-#include <goblin-engineer.hpp>
+#include <core.hpp>
 #include <goblin-engineer/network.hpp>
 
 #include <boost/asio.hpp>
