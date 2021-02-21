@@ -10,7 +10,7 @@ void http_connection::run() {
     read_request();
 }
 
-void http_connection::write(goblin_engineer::http::response_type response) {
+void http_connection::write(goblin_engineer::http::response_t response) {
     auto self = shared_from_this();
     auto response_tmp = std::move(response);
     http::async_write(

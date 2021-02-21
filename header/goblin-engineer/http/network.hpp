@@ -5,41 +5,17 @@
 #include <string>
 #include <functional>
 
-#include <boost/asio.hpp>
-#include <boost/asio/strand.hpp>
-#include <boost/asio/ip/tcp.hpp>
-
-#include <boost/beast/core.hpp>
-
 #include <boost/beast/http.hpp>
-#include <boost/beast/http/verb.hpp>
 
-#include <boost/beast/websocket.hpp>
-#include <boost/beast/core/tcp_stream.hpp>
+#include "forward.hpp"
 
-namespace goblin_engineer { namespace components { namespace detail {
+namespace goblin_engineer { namespace http {
 
         using boost::string_view;
 
-        namespace net = boost::asio;
-        using net::ip::tcp;
-        
         namespace beast = boost::beast;
         namespace http = beast::http;
         using http_method = http::verb;
-        using request_type = http::request<http::dynamic_body>;
-        using response_type = http::response<http::dynamic_body>;
-
-        namespace websocket = boost::beast::websocket;
-
-
-        /**
-         * template<
-                    class Body,
-                    class Allocator
-            >
-            using request = http::request<Body, http::basic_fields<Allocator>>;
-         * */
 
         class options final {
         public:
@@ -49,21 +25,21 @@ namespace goblin_engineer { namespace components { namespace detail {
         };
 
 
-        class response_context_type final {
+        class response_context_t final {
         public:
-            response_context_type() = default;
+            response_context_t() = default;
 
-            response_context_type(const response_context_type &) = default; // todo hack
-            response_context_type &operator=(const response_context_type &) = delete;
+            response_context_t(const response_context_t &) = default; // todo hack
+            response_context_t &operator=(const response_context_t &) = delete;
 
-            response_context_type(response_context_type &&) = default;
+            response_context_t(response_context_t &&) = default;
 
-            response_context_type &operator=(response_context_type &&) = default;
+            response_context_t &operator=(response_context_t &&) = default;
 
-            ~response_context_type() = default;
+            ~response_context_t() = default;
 
-            response_context_type(
-                    response_type response_,
+            response_context_t(
+                    response_t response_,
                     std::size_t i
             ) :
                     response_(std::move(response_)),
@@ -71,7 +47,7 @@ namespace goblin_engineer { namespace components { namespace detail {
 
             }
 
-            response_context_type(
+            response_context_t(
                     std::size_t i
             ) :
                     id_(i) {
@@ -79,7 +55,7 @@ namespace goblin_engineer { namespace components { namespace detail {
             }
 
 
-            auto response() -> response_type & {
+            auto response() -> response_t & {
                 return response_;
             }
 
@@ -88,7 +64,7 @@ namespace goblin_engineer { namespace components { namespace detail {
             }
 
         private:
-            response_type response_;
+            response_t response_;
             std::uintptr_t id_;
 
         };
@@ -108,7 +84,7 @@ namespace goblin_engineer { namespace components { namespace detail {
             ~query_context() = default;
 
             query_context(
-                    request_type request_,
+                    request_t request_,
                     size_t i,
                     actor_zeta::actor_address address
             ) :
@@ -118,11 +94,11 @@ namespace goblin_engineer { namespace components { namespace detail {
 
             }
 
-            auto request() -> request_type & {
+            auto request() -> request_t & {
                 return request_;
             }
 
-            auto response() -> response_type & {
+            auto response() -> response_t & {
                 return response_;
             }
 
@@ -137,7 +113,7 @@ namespace goblin_engineer { namespace components { namespace detail {
             */
             auto write() {
                 response_.prepare_payload();
-                response_context_type context(std::move(response_), id_);
+                response_context_t context(std::move(response_), id_);
                 actor_zeta::send(
                         address,
                         actor_zeta::make_message(
@@ -150,10 +126,10 @@ namespace goblin_engineer { namespace components { namespace detail {
             }
 
         private:
-            request_type request_;
+            request_t request_;
             std::size_t id_;
             actor_zeta::actor_address address;
-            response_type response_;
+            response_t response_;
         };
 
-}}}
+}}

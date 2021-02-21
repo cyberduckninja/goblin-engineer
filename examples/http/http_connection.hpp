@@ -26,7 +26,7 @@ public:
 
     void run();
 
-    void write(goblin_engineer::http::response_type response);
+    void write(goblin_engineer::http::response_t response);
 
 private:
     network_context* context_;
@@ -34,7 +34,7 @@ private:
     const std::uintptr_t id_;
     beast::flat_buffer buffer_;
 
-    goblin_engineer::http::request_type request_;
+    goblin_engineer::http::request_t request_;
 
     void read_request();
 

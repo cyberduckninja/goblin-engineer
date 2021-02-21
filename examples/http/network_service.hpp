@@ -53,7 +53,7 @@ public:
 
     void run();
 
-    void write(session_id id, goblin_engineer::http::response_type& response);
+    void write(session_id id, goblin_engineer::http::response_t& response);
 
     void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
 

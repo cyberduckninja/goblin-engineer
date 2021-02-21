@@ -5,13 +5,9 @@
 #include <string>
 #include <functional>
 
-#include <goblin-engineer/http/detail/network.hpp>
+#include <goblin-engineer/http/network.hpp>
 
-namespace goblin_engineer { namespace components { namespace dispatcher {
-
-    using detail::http_method;
-    using detail::query_context;
-    using detail::options;
+namespace goblin_engineer { namespace http {
 
     struct http_method_hasher final {
         std::size_t operator()(const http_method &k) const {
@@ -304,4 +300,4 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
         router router_;
     };
 
-}}}
+}}
