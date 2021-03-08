@@ -6,9 +6,9 @@
 
 namespace goblin_engineer {
 
-    template<typename Actor, typename Manager, typename... Args>
+    template<typename Service = abstract_service, typename Manager, typename... Args>
     auto make_service(actor_zeta::intrusive_ptr<Manager> &manager, Args &&... args) {
-        return manager->join(new Actor(manager, std::forward<Args>(args)...));
+        return manager->join(new Service(manager, std::forward<Args>(args)...));
     }
 
     template<
