@@ -1,14 +1,15 @@
 #pragma once
 
-#include <actor-zeta/core.hpp>
+#include <actor-zeta/actor-zeta.hpp>
 
 namespace goblin_engineer {
 
     struct abstract_service;
 
-    using actor_zeta::message;
+    using actor_zeta::base::message;
+    using actor_zeta::message_ptr;
     using actor_zeta::send;
-    using actor_zeta::supervisor;
+    using actor_zeta::supervisor_t;
     using actor_zeta::actor_address;
     using actor_zeta::detail::string_view;
     using actor_zeta::execution_device;

@@ -8,11 +8,11 @@ namespace goblin_engineer {
     }
 
     sync_policy::sync_policy(
-            goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>,
+            goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>,
             actor_zeta::detail::string_view name)
-            : actor_zeta::supervisor(name) {}
+            : actor_zeta::supervisor_t(name) {}
 
-    auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor & {
+    auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor * {
         std::cerr << "executor" << std::endl;
         assert(false);
     }
@@ -25,7 +25,7 @@ namespace goblin_engineer {
         return address;
     }
 
-    auto async_policy::join(actor_zeta::intrusive_ptr<actor_zeta::supervisor> tmp) -> actor_zeta::actor_address {
+    auto async_policy::join(actor_zeta::intrusive_ptr<actor_zeta::supervisor_t> tmp) -> actor_zeta::actor_address {
         auto supervisor = std::move(tmp);
         auto address = supervisor->address();
         actor_zeta::link(*this, address);
@@ -34,12 +34,12 @@ namespace goblin_engineer {
     }
 
 
-    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>, actor_zeta::detail::string_view view)
-        :actor_zeta::supervisor(view) {
+    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, actor_zeta::detail::string_view view)
+        :actor_zeta::supervisor_t(view) {
 
     }
 
-    async_policy::async_policy(actor_zeta::detail::string_view view) : supervisor(view) {
+    async_policy::async_policy(actor_zeta::detail::string_view view) : supervisor_t(view) {
 
     }
 
@@ -52,7 +52,7 @@ namespace goblin_engineer {
     }
 
     auto async_policy_lite::join(
-            goblin_engineer::intrusive_ptr<goblin_engineer::supervisor> tmp) -> goblin_engineer::actor_address {
+            goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t> tmp) -> goblin_engineer::actor_address {
         auto supervisor = std::move(tmp);
         auto address = supervisor->address();
         goblin_engineer::link(*this, address);

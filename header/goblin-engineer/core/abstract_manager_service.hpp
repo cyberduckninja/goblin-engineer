@@ -5,10 +5,10 @@
 
 namespace goblin_engineer {
 
-    class async_policy : public actor_zeta::supervisor {
+    class async_policy : public actor_zeta::supervisor_t {
     public:
 
-        async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>, goblin_engineer::string_view view);
+        async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view);
 
         async_policy(goblin_engineer::string_view view);
 
@@ -16,17 +16,17 @@ namespace goblin_engineer {
 
         auto join(goblin_engineer::actor ) -> goblin_engineer::actor_address override;
 
-        auto join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor> ) -> goblin_engineer::actor_address;
+        auto join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t> ) -> goblin_engineer::actor_address;
 
     protected:
         virtual auto  get_executor() noexcept -> goblin_engineer::abstract_executor* = 0;
-        std::vector<actor_zeta::intrusive_ptr<actor_zeta::supervisor>> storage_;
+        std::vector<actor_zeta::intrusive_ptr<actor_zeta::supervisor_t>> storage_;
         std::vector<actor_zeta::actor> actor_storage_;
     };
 
-    class async_policy_lite : public goblin_engineer::supervisor {
+    class async_policy_lite : public goblin_engineer::supervisor_t {
     public:
-        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>, actor_zeta::detail::string_view view);
+        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, actor_zeta::detail::string_view view);
 
         async_policy_lite(actor_zeta::detail::string_view view);
 
@@ -34,22 +34,22 @@ namespace goblin_engineer {
 
         auto join(goblin_engineer::actor ) -> goblin_engineer::actor_address override;
 
-        auto join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor> ) -> goblin_engineer::actor_address;
+        auto join(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t> ) -> goblin_engineer::actor_address;
 
     protected:
         virtual auto  get_executor() noexcept -> goblin_engineer::abstract_executor* = 0;
 
     };
 
-    class sync_policy : public actor_zeta::supervisor {
+    class sync_policy : public actor_zeta::supervisor_t {
     public:
-        sync_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor>, goblin_engineer::string_view);
+        sync_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view);
 
         sync_policy(goblin_engineer::string_view view);
 
         ~sync_policy() override = default;
 
-        auto executor() noexcept -> goblin_engineer::abstract_executor & override;
+        auto executor() noexcept -> goblin_engineer::abstract_executor* override;
 
         auto join(goblin_engineer::actor) -> goblin_engineer::actor_address override;
     };

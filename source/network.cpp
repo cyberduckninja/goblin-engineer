@@ -24,12 +24,12 @@ namespace goblin_engineer { namespace components {
             return io_context_;
         }
 
-        void network_manager_service::enqueue(message msg, actor_zeta::executor::execution_device *) {
+        void network_manager_service::enqueue_base(message_ptr msg, actor_zeta::executor::execution_device *) {
             boost::asio::post(
                     io_context_,
                     [this, msg = std::move(msg)]() mutable {
                         set_current_message(std::move(msg));
-                        dispatch().execute(*this);
+                        execute(*this);
                     }
             );
         }

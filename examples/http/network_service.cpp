@@ -63,18 +63,18 @@ void network_service::on_accept(beast::error_code ec, tcp::socket socket) {
     do_accept();
 }
 
-void network_service::enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) {
+void network_service::enqueue_base(goblin_engineer::message_ptr msg, goblin_engineer::execution_device *) {
     boost::asio::post(
             io_context_,
             [this, msg = std::move(msg)]() mutable {
                 set_current_message(std::move(msg));
-                dispatch().execute(*this);
+                execute(*this);
             }
     );
 }
 
-auto network_service::executor() noexcept -> goblin_engineer::abstract_executor & {
-    return *coordinator_;
+auto network_service::executor() noexcept -> goblin_engineer::abstract_executor * {
+    return coordinator_.get();
 }
 
 auto network_service::get_executor() noexcept -> goblin_engineer::abstract_executor * {

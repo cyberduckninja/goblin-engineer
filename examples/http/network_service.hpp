@@ -39,9 +39,9 @@ public:
 
     void write(goblin_engineer::http::session_id id, goblin_engineer::http::response_t& response);
 
-    void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
+    void enqueue_base(goblin_engineer::message_ptr msg, goblin_engineer::execution_device *) override;
 
-    auto executor() noexcept -> goblin_engineer::abstract_executor& override;
+    auto executor() noexcept -> goblin_engineer::abstract_executor* override;
 
 private:
 

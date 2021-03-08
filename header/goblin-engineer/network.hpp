@@ -34,7 +34,7 @@ namespace goblin_engineer { namespace components {
         /// \details The function is temporarily not thread safe
         /// \param[in] msg message which will be added to manager pull
         /// \param[in] exec_device the parameter is temporarily unused
-        void enqueue(message msg, actor_zeta::execution_device *exec_device) override;
+        void enqueue_base(message_ptr msg, actor_zeta::execution_device *exec_device) override;
 
     protected:
         boost::asio::io_context io_context_;                                                
