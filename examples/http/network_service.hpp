@@ -1,37 +1,21 @@
 #pragma once
 
-#include <algorithm>
-#include <cstdlib>
-#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <thread>
-#include <vector>
-#include <unordered_map>
 
 #include <boost/beast/core.hpp>
-#include <boost/beast/websocket.hpp>
-#include <boost/asio/dispatch.hpp>
-#include <boost/asio/strand.hpp>
+
 
 #include "context.hpp"
 
 #include <goblin-engineer/core.hpp>
-#include <goblin-engineer/http.hpp>
 
-
-namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
-namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
+namespace beast = boost::beast;
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 
-
-inline void fail(beast::error_code ec, char const *what) {
-    std::cerr << what << ": " << ec.message() << "\n";
-}
 namespace detail{
     struct deleter {
         void operator()(actor_zeta::abstract_executor* ptr){
@@ -57,15 +41,11 @@ public:
 
     void enqueue(goblin_engineer::message msg, goblin_engineer::execution_device *) override;
 
-    auto executor() noexcept -> goblin_engineer::abstract_executor& {
-        return *coordinator_;
-    }
+    auto executor() noexcept -> goblin_engineer::abstract_executor& override;
 
 private:
 
-    auto  get_executor() noexcept -> goblin_engineer::abstract_executor* override {
-        return  coordinator_.get();
-    }
+    auto  get_executor() noexcept -> goblin_engineer::abstract_executor* override;
 
     std::unique_ptr<actor_zeta::abstract_executor,detail::deleter>coordinator_;
     net::io_context &io_context_;
@@ -73,6 +53,5 @@ private:
     std::unique_ptr<network_context> context_;
 
     void do_accept();
-
     void on_accept(beast::error_code ec, tcp::socket socket);
 };

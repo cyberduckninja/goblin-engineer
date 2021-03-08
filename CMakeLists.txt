@@ -85,9 +85,9 @@ set( ${PROJECT_NAME}_source_http
 )
 
 set( ${PROJECT_NAME}_header
-        header/goblin-engineer/abstract_manager_service.hpp
-        header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/forward.hpp
+        header/goblin-engineer/core/abstract_manager_service.hpp
+        header/goblin-engineer/core/abstract_service.hpp
+        header/goblin-engineer/core/forward.hpp
 )
 
 set( ${PROJECT_NAME}_source

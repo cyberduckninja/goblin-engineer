@@ -1,7 +1,7 @@
 #pragma once
 
-#include <goblin-engineer/forward.hpp>
-#include <goblin-engineer/abstract_manager_service.hpp>
+#include <goblin-engineer/core/forward.hpp>
+#include <goblin-engineer/core/abstract_manager_service.hpp>
 #include <boost/asio.hpp>
 
 namespace goblin_engineer { namespace components {

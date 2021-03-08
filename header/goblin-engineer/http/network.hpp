@@ -32,7 +32,7 @@ namespace goblin_engineer { namespace http {
 
             query_context_t(query_context_t &&) = default;
 
-            query_context &operator=(query_context_t &&) = default;
+            query_context_t &operator=(query_context_t &&) = default;
 
             ~query_context_t() = default;
 
@@ -57,7 +57,7 @@ namespace goblin_engineer { namespace http {
 
             auto write() {
                 response_.prepare_payload();
-                response_context_t context(std::move(response_), id_);
+             /*   response_context_t context(std::move(response_), id_);
                 actor_zeta::send(
                         address,
                         actor_zeta::make_message(
@@ -67,6 +67,7 @@ namespace goblin_engineer { namespace http {
 
                         )
                 );
+                */
             }
 
         private:

@@ -1,7 +1,13 @@
 #include "network_service.hpp"
 #include "http_connection.hpp"
 
+#include <boost/beast/http.hpp>
+
 constexpr bool reuse_address = true;
+
+inline void fail(beast::error_code ec, char const *what) {
+    std::cerr << what << ": " << ec.message() << "\n";
+}
 
 network_service::network_service( net::io_context &ioc, tcp::endpoint endpoint)
         :  goblin_engineer::abstract_manager_service("network_manager")
@@ -65,4 +71,12 @@ void network_service::enqueue(goblin_engineer::message msg, goblin_engineer::exe
                 dispatch().execute(*this);
             }
     );
+}
+
+auto network_service::executor() noexcept -> goblin_engineer::abstract_executor & {
+    return *coordinator_;
+}
+
+auto network_service::get_executor() noexcept -> goblin_engineer::abstract_executor * {
+    return  coordinator_.get();
 }

@@ -1,4 +1,4 @@
-#include <goblin-engineer/abstract_manager_service.hpp>
+#include <goblin-engineer/core/abstract_manager_service.hpp>
 #include <iostream>
 
 namespace goblin_engineer {

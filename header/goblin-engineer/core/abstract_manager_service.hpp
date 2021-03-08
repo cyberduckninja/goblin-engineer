@@ -1,6 +1,6 @@
 #pragma once
 
-#include <goblin-engineer/forward.hpp>
+#include <goblin-engineer/core/forward.hpp>
 
 
 namespace goblin_engineer {

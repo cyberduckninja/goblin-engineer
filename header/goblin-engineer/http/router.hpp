@@ -34,7 +34,7 @@ namespace goblin_engineer { namespace http {
 
         ~http_method_container() = default;
 
-        using action = std::function<void(query_context & )>;
+        using action = std::function<void(query_context_t & )>;
         using storage = std::unordered_map<std::string, action>;
         using iterator = storage::iterator;
 
@@ -47,7 +47,7 @@ namespace goblin_engineer { namespace http {
             storage_.emplace(route_path.to_string(), std::forward<F>(handler));
         }
 
-        auto invoke(query_context &r) {
+        auto invoke(query_context_t &r) {
             auto url = r.request().target().to_string();
             auto it = storage_.find(url);
             auto request = std::move(r);
@@ -103,7 +103,7 @@ namespace goblin_engineer { namespace http {
             }
         }
 
-        auto invoke(query_context &context) {
+        auto invoke(query_context_t &context) {
             auto method = context.request().method();
 
             auto it = storage_.find(method);

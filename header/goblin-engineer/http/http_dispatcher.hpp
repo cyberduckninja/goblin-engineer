@@ -1,6 +1,6 @@
 #pragma once
 
-#include <goblin-engineer/abstract_service.hpp>
+#include <goblin-engineer/core/abstract_service.hpp>
 
 #include "router.hpp"
 

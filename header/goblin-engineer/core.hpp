@@ -1,8 +1,8 @@
 #pragma once
 
-#include <goblin-engineer/abstract_manager_service.hpp>
-#include <goblin-engineer/abstract_service.hpp>
-#include <goblin-engineer/forward.hpp>
+#include <goblin-engineer/core/abstract_manager_service.hpp>
+#include <goblin-engineer/core/abstract_service.hpp>
+#include <goblin-engineer/core/forward.hpp>
 
 namespace goblin_engineer {
 
