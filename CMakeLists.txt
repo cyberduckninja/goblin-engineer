@@ -43,6 +43,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/W4 /WX)
 endif ()
 
+include(cmake/clang_tools.cmake)
+
 #############################################################################################
 #CONAN
 
