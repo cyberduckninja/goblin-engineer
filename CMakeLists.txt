@@ -20,10 +20,8 @@ option(CONAN_EXPERIMENTAL_INCLUDE "CONAN EXPERIMENT INCLUDE" ON)
 
 option(HTTP_COMPONENT "developer mode" OFF)
 
-if (DEV_MODE)
+if ((CMAKE_CXX_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     add_compile_options(
-            #-Werror
-
             -Wall
             -Wextra
             -Wpedantic
@@ -41,19 +39,14 @@ if (DEV_MODE)
             -Wsign-conversion
             -Wsign-promo
     )
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    add_compile_options(/W4 /WX)
 endif ()
+
+include(cmake/clang_tools.cmake)
 
 #############################################################################################
 #CONAN
-
-if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.15/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake")
-endif ()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-conan_add_remote(NAME jinncrafters INDEX 2 URL https://api.bintray.com/conan/jinncrafters/conan)
 
 if (CONAN_EXPERIMENTAL_INCLUDE)
     set(CONAN_SYSTEM_INCLUDES "On")
@@ -61,26 +54,20 @@ endif ()
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup(NO_OUTPUT_DIRS)
+    conan_basic_setup(
+            #BASIC_SETUP
+            #BUILD missing
+            NO_OUTPUT_DIRS
+    )
 else ()
     message(WARNING "The file conanbuildinfo.cmake doesn't exist, you have to run conan install first")
 endif ()
 
-
-include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 #CONAN
 #############################################################################################
 
-set( ${PROJECT_NAME}_header_base
-        header/goblin-engineer/components/root_manager.hpp
-)
-
-set( ${PROJECT_NAME}_source_base
-        source/root_manager.cpp
-)
-
 set( ${PROJECT_NAME}_header_asio
-        header/goblin-engineer/components/network.hpp
+        header/goblin-engineer/network.hpp
 )
 
 set( ${PROJECT_NAME}_source_asio
@@ -89,30 +76,20 @@ set( ${PROJECT_NAME}_source_asio
 
 
 set( ${PROJECT_NAME}_header_http
-        header/goblin-engineer/components/http/http_server/http_session.hpp
-        header/goblin-engineer/components/http/http_server/listener.hpp
-        header/goblin-engineer/components/http/http_server/server.hpp
-        header/goblin-engineer/components/http/http_server/websocket_session.hpp
-
-        header/goblin-engineer/components/http/dispather/http_dispather.hpp
-        header/goblin-engineer/components/http/dispather/router.hpp
-
-        header/goblin-engineer/components/http/detail/network.hpp
-        header/goblin-engineer/components/http.hpp
+        header/goblin-engineer/http/http_dispatcher.hpp
+        header/goblin-engineer/http/router.hpp
+        header/goblin-engineer/http/network.hpp
+        header/goblin-engineer/http.hpp
 )
 
 set( ${PROJECT_NAME}_source_http
-        header/goblin-engineer/components/http/http_server/http_session.cpp
-        header/goblin-engineer/components/http/http_server/listener.cpp
-        header/goblin-engineer/components/http/http_server/server.cpp
-        header/goblin-engineer/components/http/http_server/websocket_session.cpp
-        header/goblin-engineer/components/http/dispather/http_dispather.cpp
+        header/goblin-engineer/http/http_dispatcher.cpp
 )
 
 set( ${PROJECT_NAME}_header
-        header/goblin-engineer/abstract_manager_service.hpp
-        header/goblin-engineer/abstract_service.hpp
-        header/goblin-engineer/forward.hpp
+        header/goblin-engineer/core/abstract_manager_service.hpp
+        header/goblin-engineer/core/abstract_service.hpp
+        header/goblin-engineer/core/forward.hpp
 )
 
 set( ${PROJECT_NAME}_source
@@ -121,13 +98,10 @@ set( ${PROJECT_NAME}_source
 
 
 list(APPEND ${PROJECT_NAME}_header
-
-        ${${PROJECT_NAME}_header_base}
         ${${PROJECT_NAME}_header_asio}
 )
 
 list(APPEND ${PROJECT_NAME}_source
-        ${${PROJECT_NAME}_source_base}
         ${${PROJECT_NAME}_source_asio}
 )
 

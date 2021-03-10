@@ -14,6 +14,7 @@ conan remote add cyberduckninja https://api.bintray.com/conan/cyberduckninja/con
 ### Basic setup
 ```bash
 conan remote add bincrafters  https://api.bintray.com/conan/bincrafters/public-conan
+conan remote add cyberduckninja https://api.bintray.com/conan/cyberduckninja/conan
 conan install goblin-engineer/1.0.0a3@cyberduckninja/stable
 ```
 ### Project setup

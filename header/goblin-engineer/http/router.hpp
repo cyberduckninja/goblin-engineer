@@ -5,17 +5,12 @@
 #include <string>
 #include <functional>
 
-#include <actor-zeta/core.hpp>
-#include <goblin-engineer/components/http/detail/network.hpp>
+#include <goblin-engineer/http/network.hpp>
 
-namespace goblin_engineer { namespace components { namespace dispatcher {
-
-    using detail::http_method;
-    using detail::query_context;
-    using detail::options;
+namespace goblin_engineer { namespace http {
 
     struct http_method_hasher final {
-        std::size_t operator()(const http_method &k) const {
+        std::size_t operator()(const method_t &k) const {
             using std::size_t;
             using std::hash;
 
@@ -39,7 +34,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
 
         ~http_method_container() = default;
 
-        using action = std::function<void(query_context & )>;
+        using action = std::function<void(query_context_t & )>;
         using storage = std::unordered_map<std::string, action>;
         using iterator = storage::iterator;
 
@@ -52,7 +47,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
             storage_.emplace(route_path.to_string(), std::forward<F>(handler));
         }
 
-        auto invoke(query_context &r) {
+        auto invoke(query_context_t &r) {
             auto url = r.request().target().to_string();
             auto it = storage_.find(url);
             auto request = std::move(r);
@@ -88,12 +83,12 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
 
         ~router() = default;
 
-        using storage = std::unordered_map<http_method, http_method_container, http_method_hasher>;
+        using storage = std::unordered_map<method_t, http_method_container, http_method_hasher>;
         using iterator = storage::iterator;
 
         template<class F>
         auto registration_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 const options &options,
                 F handler
@@ -108,7 +103,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
             }
         }
 
-        auto invoke(query_context &context) {
+        auto invoke(query_context_t &context) {
             auto method = context.request().method();
 
             auto it = storage_.find(method);
@@ -116,7 +111,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
         }
         /// TODO: not implement update
 /*
-        auto update(dispather&r){
+        auto update(dispatcher&r){
            for(auto&&i:r ){
 
            }
@@ -152,7 +147,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::delete_,
+                    method_t::delete_,
                     route_path,
                     std::move(handler)
             );
@@ -165,7 +160,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::delete_,
+                    method_t::delete_,
                     route_path,
                     options,
                     std::move(handler)
@@ -178,7 +173,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::get,
+                    method_t::get,
                     route_path,
                     std::forward<F>(handler)
             );
@@ -191,7 +186,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::get,
+                    method_t::get,
                     route_path,
                     options,
                     std::move(handler)
@@ -204,7 +199,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::head,
+                    method_t::head,
                     route_path,
                     std::move(handler)
             );
@@ -217,7 +212,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::head,
+                    method_t::head,
                     route_path,
                     options,
                     std::move(handler)
@@ -230,7 +225,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::post,
+                    method_t::post,
                     route_path,
                     std::forward<F>(handler)
             );
@@ -243,7 +238,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::post,
+                    method_t::post,
                     route_path,
                     options,
                     std::move(handler)
@@ -256,7 +251,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::put,
+                    method_t::put,
                     route_path,
                     std::move(handler)
             );
@@ -269,7 +264,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
                 F handler
         ) {
             add_handler(
-                    http_method::put,
+                    method_t::put,
                     route_path,
                     options,
                     std::forward<F>(handler)
@@ -280,7 +275,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
 
         template<typename F>
         auto add_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 F handler
         ) {
@@ -294,7 +289,7 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
 
         template<typename F>
         auto add_handler(
-                http_method method,
+                method_t method,
                 boost::string_view route_path,
                 const options &options,
                 F handler
@@ -305,4 +300,4 @@ namespace goblin_engineer { namespace components { namespace dispatcher {
         router router_;
     };
 
-}}}
+}}

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <goblin-engineer/forward.hpp>
-#include <goblin-engineer/abstract_manager_service.hpp>
+#include <goblin-engineer/core/forward.hpp>
+#include <goblin-engineer/core/abstract_manager_service.hpp>
 #include <boost/asio.hpp>
 
 namespace goblin_engineer { namespace components {
@@ -17,9 +17,9 @@ namespace goblin_engineer { namespace components {
         /// \param[in] name name for manager
         /// \param[in] concurrency_hint number of threads
         network_manager_service(
-                root_manager *env
+                abstract_manager_service *env
                 , actor_zeta::detail::string_view name
-                , std::size_t concurrency_hint
+                , int concurrency_hint
         );
         
         /// \brief Destructor
@@ -34,7 +34,7 @@ namespace goblin_engineer { namespace components {
         /// \details The function is temporarily not thread safe
         /// \param[in] msg message which will be added to manager pull
         /// \param[in] exec_device the parameter is temporarily unused
-        void enqueue(message msg, actor_zeta::execution_device *exec_device) override;
+        void enqueue_base(message_ptr msg, actor_zeta::execution_device *exec_device) override;
 
     protected:
         boost::asio::io_context io_context_;                                                

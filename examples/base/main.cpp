@@ -3,8 +3,8 @@
 /// \details The basic usage of the library with creating manager for http
 /// service is described here
 
-#include <goblin-engineer.hpp>
-#include <goblin-engineer/components/network.hpp>
+#include <core.hpp>
+#include <goblin-engineer/network.hpp>
 
 #include <boost/asio.hpp>
 #include <boost/beast/core.hpp>
@@ -33,7 +33,7 @@ struct data_t final {
 /// \details Describe additional class for our http_t component
 class http_connection : public std::enable_shared_from_this<http_connection> {
 public:
-  http_connection(tcp::socket socket, const actor_zeta::actor_address &address)
+  http_connection(tcp::socket socket, const goblin_engineer::actor_address &address)
       : socket_(std::move(socket))
       , data_(reinterpret_cast<std::uintptr_t>(this))
       , address_(address) {}
@@ -65,7 +65,7 @@ private:
 
   data_t data_;
 
-  actor_zeta::actor_address address_;
+    goblin_engineer::actor_address address_;
 
   void read_request() {
     auto self = shared_from_this();
@@ -83,11 +83,11 @@ private:
   }
 
   void process_request() {
-    actor_zeta::send(
-        actor_zeta::actor_address(address_)
-        , actor_zeta::actor_address(address_)
-        , "router"
-        , std::move(data_)
+    goblin_engineer::send(
+            goblin_engineer::actor_address(address_)
+            , goblin_engineer::actor_address(address_)
+            , "router"
+            , std::move(data_)
     );
   }
 };
@@ -104,13 +104,13 @@ public:
       , acceptor_(loop(), {tcp::v4(), 9999})
       , socket(loop()) {
     add_handler("write",
-                [&](actor_zeta::context & /*ctx*/, data_t &data) -> void {
+                [&](goblin_engineer::context & /*ctx*/, data_t &data) -> void {
                   write(std::move(data));
                 });
 
     add_handler("router",
-                [&](actor_zeta::context & /*ctx*/, data_t &data) -> void {
-                  actor_zeta::send(addresses("worker"), address(), "replay",std::move(data));
+                [&](goblin_engineer::context & /*ctx*/, data_t &data) -> void {
+                    goblin_engineer::send(addresses("worker"), address(), "replay",std::move(data));
                 });
 
     do_accept();
@@ -154,14 +154,14 @@ private:
 /// \details Creating service worker with handler for sending data
 class worker_t : public goblin_engineer::abstract_service {
 public:
-  explicit worker_t(actor_zeta::intrusive_ptr<http_t> manager)
+  explicit worker_t(goblin_engineer::intrusive_ptr<http_t> manager)
       : goblin_engineer::abstract_service(manager, "worker") {
 
     add_handler("replay",
-                [&](actor_zeta::context & /*ctx*/, data_t &data) -> void {
+                [&](goblin_engineer::context & /*ctx*/, data_t &data) -> void {
                   data.response_.body() = data.request_.body();
                   data.response_.prepare_payload();
-                  actor_zeta::send(
+                    goblin_engineer::send(
                       addresses("http")
                       , address()
                       , "write"
@@ -179,8 +179,8 @@ public:
 int main() {
 
   goblin_engineer::components::root_manager app(1, 1000); ///< Create manager with our confing
-  auto http = goblin_engineer::components::make_manager_service<http_t>(app); ///< Add to manager http service
-  goblin_engineer::components::make_service<worker_t>(http); ///< Сreate our service for use
+  auto http = goblin_engineer::make_manager_service<http_t>(app); ///< Add to manager http service
+  goblin_engineer::make_service<worker_t>(http); ///< Сreate our service for use
 
   auto sigint_set = std::make_shared<boost::asio::signal_set>(app.loop(), SIGINT, SIGTERM);
   sigint_set->async_wait(

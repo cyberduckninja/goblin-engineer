@@ -32,7 +32,7 @@
 *.app
 
 conan.lock
-conanbuildinfo.cmake
+cmake-build-*/conanbuildinfo.cmake
 conanbuildinfo.txt
 conaninfo.txt
 graph_info.json
