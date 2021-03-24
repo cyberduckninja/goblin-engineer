@@ -8,9 +8,12 @@ set (CMAKE_PROJECT_VERSION "${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSI
 cmake_policy(SET CMP0048 NEW)
 PROJECT(goblin-engineer VERSION "${CMAKE_PROJECT_VERSION}" LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 14 CACHE STRING "The C++ standard whose features are requested.")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+message(STATUS "STANDARD CPP = ${CMAKE_CXX_STANDARD}")
+message(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 
 option(ALLOW_EXAMPLES "Enable building examples" OFF)
 
@@ -109,8 +112,6 @@ if(HTTP_COMPONENT)
     list(APPEND ${PROJECT_NAME}_header ${${PROJECT_NAME}_header_http})
     list(APPEND ${PROJECT_NAME}_source ${${PROJECT_NAME}_source_http})
 endif()
-
-message(STATUS "STANDARD CPP = ${CMAKE_CXX_STANDARD}")
 
 add_library(
         ${PROJECT_NAME}
