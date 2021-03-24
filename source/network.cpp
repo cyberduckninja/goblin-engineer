@@ -4,7 +4,7 @@ namespace goblin_engineer { namespace components {
 
         network_manager_service::network_manager_service(
                 abstract_manager_service *env,
-                actor_zeta::detail::string_view name,
+               goblin_engineer::string_view name,
                 int concurrency_hint
         )
         : abstract_manager_service(env, name)

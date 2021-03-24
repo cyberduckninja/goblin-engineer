@@ -9,7 +9,7 @@ namespace goblin_engineer {
 
     sync_policy::sync_policy(
             goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>,
-            actor_zeta::detail::string_view name)
+            goblin_engineer::string_view name)
             : actor_zeta::supervisor_t(name) {}
 
     auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor * {
@@ -34,12 +34,12 @@ namespace goblin_engineer {
     }
 
 
-    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, actor_zeta::detail::string_view view)
+    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view)
         :actor_zeta::supervisor_t(view) {
 
     }
 
-    async_policy::async_policy(actor_zeta::detail::string_view view) : supervisor_t(view) {
+    async_policy::async_policy(goblin_engineer::string_view view) : supervisor_t(view) {
 
     }
 

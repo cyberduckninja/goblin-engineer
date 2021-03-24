@@ -110,6 +110,8 @@ if(HTTP_COMPONENT)
     list(APPEND ${PROJECT_NAME}_source ${${PROJECT_NAME}_source_http})
 endif()
 
+message(STATUS "STANDARD CPP = ${CMAKE_CXX_STANDARD}")
+
 add_library(
         ${PROJECT_NAME}
         ${${PROJECT_NAME}_header}
