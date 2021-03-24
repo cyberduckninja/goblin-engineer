@@ -26,9 +26,9 @@ namespace goblin_engineer {
 
     class async_policy_lite : public goblin_engineer::supervisor_t {
     public:
-        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, actor_zeta::detail::string_view view);
+        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view);
 
-        async_policy_lite(actor_zeta::detail::string_view view);
+        async_policy_lite(goblin_engineer::string_view view);
 
         ~async_policy_lite() override = default;
 
