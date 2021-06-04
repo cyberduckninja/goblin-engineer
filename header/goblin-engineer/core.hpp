@@ -11,9 +11,7 @@ namespace goblin_engineer {
         return manager->join(new Service(manager, std::forward<Args>(args)...));
     }
 
-    template<
-        typename Manager,
-        typename... Args>
+    template<typename Manager, typename... Args>
     auto make_manager_service(actor_zeta::intrusive_ptr<Manager>& manager, Args&&... args) {
         actor_zeta::intrusive_ptr<Manager> tmp(
             new Manager(
