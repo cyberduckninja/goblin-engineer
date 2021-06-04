@@ -9,7 +9,7 @@ namespace goblin_engineer {
 
     sync_policy::sync_policy(
             goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>,
-            string_view name)
+            goblin_engineer::string_view name)
             : actor_zeta::supervisor_t(name) {}
 
     auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor * {
