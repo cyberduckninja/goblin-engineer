@@ -1,20 +1,16 @@
-#include <memory>
 #include <iostream>
+#include <memory>
 
 #include <goblin-engineer/core.hpp>
 
 #include "network_service.hpp"
 
-
-
-int main(int /*argc*/, char **/*argv[]*/) {
-
+int main(int /*argc*/, char** /*argv[]*/) {
     auto const address = net::ip::make_address("0.0.0.0");
     auto const port = static_cast<unsigned short>(9999);
     auto const threads = std::max<int>(1, 1);
 
     net::io_context ioc{threads};
-
 
     auto nm = goblin_engineer::make_manager_service<network_service>(ioc, tcp::endpoint{address, port});
     ///auto mq = make_manager_service<manager_queue>(executor.get());
@@ -24,10 +20,9 @@ int main(int /*argc*/, char **/*argv[]*/) {
     v.reserve(threads - 1);
     for (auto i = threads - 1; i > 0; --i) {
         v.emplace_back(
-                [&ioc] {
-                    ioc.run();
-                }
-        );
+            [&ioc] {
+                ioc.run();
+            });
     }
 
     ioc.run();
