@@ -6,9 +6,9 @@ namespace goblin_engineer {
 
     class async_policy : public actor_zeta::supervisor_t {
     public:
-        async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view);
+        async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, std::string name);
 
-        async_policy(goblin_engineer::string_view view);
+        async_policy(std::string name);
 
         ~async_policy() override = default;
 
@@ -24,9 +24,9 @@ namespace goblin_engineer {
 
     class async_policy_lite : public goblin_engineer::supervisor_t {
     public:
-        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view);
+        async_policy_lite(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, std::string name);
 
-        async_policy_lite(goblin_engineer::string_view view);
+        async_policy_lite(std::string name);
 
         ~async_policy_lite() override = default;
 
@@ -40,9 +40,9 @@ namespace goblin_engineer {
 
     class sync_policy : public actor_zeta::supervisor_t {
     public:
-        sync_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view);
+        sync_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, std::string name);
 
-        sync_policy(goblin_engineer::string_view view);
+        sync_policy(std::string name);
 
         ~sync_policy() override = default;
 

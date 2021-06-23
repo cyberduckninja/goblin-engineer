@@ -9,8 +9,8 @@ namespace goblin_engineer {
 
     sync_policy::sync_policy(
         goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>,
-        goblin_engineer::string_view name)
-        : actor_zeta::supervisor_t(name) {}
+        std::string name)
+        : actor_zeta::supervisor_t(std::move(name)) {}
 
     auto sync_policy::executor() noexcept -> actor_zeta::abstract_executor* {
         std::cerr << "executor" << std::endl;
@@ -33,12 +33,12 @@ namespace goblin_engineer {
         return address;
     }
 
-    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, goblin_engineer::string_view view)
-        : actor_zeta::supervisor_t(view) {
+    async_policy::async_policy(goblin_engineer::intrusive_ptr<goblin_engineer::supervisor_t>, std::string name)
+        : actor_zeta::supervisor_t(std::move(name)) {
     }
 
-    async_policy::async_policy(goblin_engineer::string_view view)
-        : supervisor_t(view) {
+    async_policy::async_policy(std::string name)
+        : supervisor_t(std::move(name)) {
     }
 
     auto async_policy_lite::join(goblin_engineer::actor tmp) -> goblin_engineer::actor_address {

@@ -14,10 +14,10 @@ namespace goblin_engineer { namespace components {
         /// \details Constructor creating manager service and open <concurency_hint> threads in thread pull
         ///          Each thread run io context
         /// \param[in] env special enviroment for abstract service manager that contains executor for service
-        /// \param[in] name name for manager
+        /// \param[in] name name for manager, use std::move
         /// \param[in] concurrency_hint number of threads
         network_manager_service(
-            abstract_manager_service* env, goblin_engineer::string_view name, int concurrency_hint);
+            abstract_manager_service* env, std::string name, int concurrency_hint);
 
         /// \brief Destructor
         /// \details Destructor stopping input-output context

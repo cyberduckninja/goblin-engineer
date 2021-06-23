@@ -4,9 +4,9 @@ namespace goblin_engineer { namespace components {
 
     network_manager_service::network_manager_service(
         abstract_manager_service* env,
-        goblin_engineer::string_view name,
+        std::string name,
         int concurrency_hint)
-        : abstract_manager_service(env, name)
+        : abstract_manager_service(env, std::move(name))
         , io_context_(concurrency_hint)
         , work_(boost::asio::make_work_guard(io_context_)) {
         thread_ = std::thread([this]() {
