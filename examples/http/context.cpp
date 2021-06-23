@@ -7,14 +7,13 @@ using tcp = boost::asio::ip::tcp;
 
 #include "http_connection.hpp"
 
-
-session_type &network_context::session(network_context *ctx, tcp::socket socket) {
+session_type& network_context::session(network_context* ctx, tcp::socket socket) {
     auto session = std::make_shared<session_type>(ctx, std::move(socket));
     sessions_.emplace(reinterpret_cast<std::uintptr_t>(session.get()), session);
     return *session;
 }
 
-session_type &network_context::session(goblin_engineer::http::session_id id) {
+session_type& network_context::session(goblin_engineer::http::session_id id) {
     return *sessions_.at(id);
 }
 

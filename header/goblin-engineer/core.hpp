@@ -7,29 +7,24 @@
 namespace goblin_engineer {
 
     template<typename Service = abstract_service, typename Manager, typename... Args>
-    auto make_service(actor_zeta::intrusive_ptr<Manager> &manager, Args &&... args) {
+    auto make_service(actor_zeta::intrusive_ptr<Manager>& manager, Args&&... args) {
         return manager->join(new Service(manager, std::forward<Args>(args)...));
     }
 
-    template<
-            typename Manager,
-            typename... Args
-    >
-    auto make_manager_service(actor_zeta::intrusive_ptr<Manager> &manager, Args &&... args) {
+    template<typename Manager, typename... Args>
+    auto make_manager_service(actor_zeta::intrusive_ptr<Manager>& manager, Args&&... args) {
         actor_zeta::intrusive_ptr<Manager> tmp(
-                new Manager(
-                        &manager,
-                        std::forward<Args>(args)...
-                )
-        );
+            new Manager(
+                &manager,
+                std::forward<Args>(args)...));
         manager->join(tmp);
         return tmp;
     }
 
     template<typename Manager, typename... Args>
-    auto make_manager_service(Args &&... args) -> actor_zeta::intrusive_ptr<Manager>  {
+    auto make_manager_service(Args&&... args) -> actor_zeta::intrusive_ptr<Manager> {
         return actor_zeta::intrusive_ptr<Manager>(
-                new Manager(std::forward<Args>(args)...));
+            new Manager(std::forward<Args>(args)...));
     }
 
 } // namespace goblin_engineer
